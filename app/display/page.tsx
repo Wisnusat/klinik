@@ -1,0 +1,211 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Users, ArrowRight, Volume2, Clock, MapPin } from 'lucide-react'
+
+type QueueData = {
+  current: string | null
+  next: string | null
+  service: string
+  totalWaiting: number
+  doctor: string
+}
+
+export default function QueueDisplay() {
+  const searchParams = useSearchParams()
+  const service = searchParams.get('s') || 'general'
+  
+  const [queueData, setQueueData] = useState<QueueData>({
+    current: null,
+    next: null,
+    service: service === 'dental' ? 'Dental' : 'General',
+    totalWaiting: 0,
+    doctor: service === 'dental' ? 'Dr. Michael Chen' : 'Dr. Sarah Johnson'
+  })
+
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [isSoundOn, setIsSoundOn] = useState(true)
+
+  // Real-time clock
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  // Mock queue data - in real app, this would come from API/WebSocket
+  useEffect(() => {
+    const mockQueues = {
+      dental: {
+        current: 'D-015',
+        next: 'D-016',
+        service: 'Dental',
+        totalWaiting: 8,
+        doctor: 'Dr. Michael Chen'
+      },
+      general: {
+        current: 'A-042',
+        next: 'A-043',
+        service: 'General',
+        totalWaiting: 12,
+        doctor: 'Dr. Sarah Johnson'
+      }
+    }
+
+    const initialData = mockQueues[service as keyof typeof mockQueues] || mockQueues.general
+    setQueueData(initialData)
+
+    // Simulate real-time updates
+    const interval = setInterval(() => {
+      setQueueData(prev => {
+        if (Math.random() > 0.7 && prev.current) {
+          // Simulate next patient being called
+          const prefix = service === 'dental' ? 'D' : 'A'
+          const currentNum = parseInt(prev.current.split('-')[1])
+          const nextNum = currentNum + 1
+          const nextNextNum = nextNum + 1
+          
+          return {
+            ...prev,
+            current: `${prefix}-${String(nextNum).padStart(3, '0')}`,
+            next: `${prefix}-${String(nextNextNum).padStart(3, '0')}`,
+            totalWaiting: Math.max(0, prev.totalWaiting - 1)
+          }
+        }
+        return prev
+      })
+    }, 15000) // Update every 15 seconds
+
+    return () => clearInterval(interval)
+  }, [service])
+
+  const getServiceColor = () => {
+    return service === 'dental' 
+      ? 'text-blue-600 dark:text-blue-400' 
+      : 'text-emerald-600 dark:text-emerald-400'
+  }
+
+  const getServiceBgColor = () => {
+    return service === 'dental' 
+      ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800' 
+      : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'
+  }
+
+  return (
+    <main className="h-screen w-screen bg-background text-foreground flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="border-b border-border/40">
+        <div className="container mx-auto max-w-7xl px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className={`text-4xl font-bold ${getServiceColor()}`}>Antrian {queueData.service}</h1>
+              <p className="text-lg text-foreground/60 mt-1">Klinik</p>
+            </div>
+            <div className="flex items-center gap-8">
+              <div className="text-right">
+                <p className="text-sm text-foreground/50">Menunggu</p>
+                <p className="text-3xl font-bold">{queueData.totalWaiting}</p>
+              </div>
+              {/* <Button
+                variant="ghost"
+                size="lg"
+                onClick={() => setIsSoundOn(!isSoundOn)}
+                className="text-foreground hover:bg-secondary"
+              >
+                <Volume2 className={isSoundOn ? '' : 'opacity-50'} size={24} />
+              </Button> */}
+              <div className="text-right">
+                <p className="text-sm text-foreground/50">{currentTime.toLocaleDateString('id-ID', { weekday: 'long' })}</p>
+                <p className="text-2xl font-mono">{currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content - Full Screen */}
+      <div className="flex-1 flex items-center justify-center p-4 lg:p-8">
+        <div className="w-full max-w-4xl lg:max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
+            
+            {/* Current Queue */}
+            <Card className={`p-6 lg:p-12 ${getServiceBgColor()} border-2 lg:border-4`}>
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 lg:gap-4 mb-4 lg:mb-8">
+                  <Users className={getServiceColor()} size={32} />
+                  <h2 className="text-lg lg:text-3xl font-semibold text-foreground">Sedang Dilayani</h2>
+                </div>
+                
+                <div className="my-6 lg:my-12">
+                  <span className="text-5xl lg:text-8xl font-black font-mono text-foreground">
+                    {queueData.current || '---'}
+                  </span>
+                </div>
+                
+                <p className="text-xs lg:text-lg text-foreground/70">
+                  {queueData.current ? 'Pasien dipanggil ke ruangan' : 'Belum ada pasien'}
+                </p>
+              </div>
+            </Card>
+
+            {/* Next Queue */}
+            <Card className="p-6 lg:p-12 border-2 lg:border-4 border-border/40">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 lg:gap-4 mb-4 lg:mb-8">
+                  <Clock className="text-primary" size={32} />
+                  <h2 className="text-lg lg:text-3xl font-semibold text-foreground">Berikutnya</h2>
+                </div>
+                
+                <div className="my-6 lg:my-12">
+                  <span className="text-5xl lg:text-8xl font-black font-mono text-muted-foreground">
+                    {queueData.next || '---'}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-center gap-2 lg:gap-3 text-xs lg:text-lg text-foreground/70">
+                  <span>Siapkan diri Anda</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Information Panel */}
+          <div className="mt-6 lg:mt-12">
+            <Card className="p-4 lg:p-8 bg-muted/30 border border-border/40 lg:border-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 text-center">
+                <div>
+                  <p className="text-xs lg:text-sm text-foreground/50 uppercase tracking-wider mb-1 lg:mb-2">Layanan</p>
+                  <p className="text-sm lg:text-2xl font-semibold text-foreground">{queueData.service}</p>
+                </div>
+                <div>
+                  <p className="text-xs lg:text-sm text-foreground/50 uppercase tracking-wider mb-1 lg:mb-2">Dokter</p>
+                  <p className="text-sm lg:text-2xl font-semibold text-foreground">{queueData.doctor}</p>
+                </div>
+                <div>
+                  <p className="text-xs lg:text-sm text-foreground/50 uppercase tracking-wider mb-1 lg:mb-2">Estimasi</p>
+                  <p className="text-sm lg:text-2xl font-semibold text-foreground">
+                    {queueData.totalWaiting > 0 ? `~${queueData.totalWaiting * 5} menit` : 'Tersedia'}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Important Notice */}
+          {/* <div className="mt-4 lg:mt-8">
+            <Card className="p-3 lg:p-6 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 lg:border-2">
+              <p className="text-xs lg:text-lg text-blue-800 dark:text-blue-200 text-center">
+                <strong>Penting:</strong> Nomor antrian juga dapat dilihat di halaman appointment/booking Anda
+              </p>
+            </Card>
+          </div> */}
+        </div>
+      </div>
+    </main>
+  )
+}

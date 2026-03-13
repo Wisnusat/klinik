@@ -120,11 +120,11 @@ export default function AppointmentHistory() {
             </div>
           )}
 
-          {appointment.status === 'Completed' && (
+          {/* {appointment.status === 'Completed' && (
             <Button variant="outline" className="border-primary text-primary hover:bg-secondary w-full">
               View Medical Records
             </Button>
-          )}
+          )} */}
         </Card>
       ))}
     </div>

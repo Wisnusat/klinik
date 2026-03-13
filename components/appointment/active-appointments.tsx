@@ -137,33 +137,37 @@ export default function ActiveAppointments() {
               </div>
             </div>
 
-            <div className="border-l border-border/40 pl-6 md:w-48">
-              <p className="text-xs text-foreground/50 uppercase tracking-wider mb-2">Booking Code</p>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold text-primary font-mono">{appointment.bookingCode}</span>
-                <button
-                  onClick={() => copyToClipboard(appointment.bookingCode)}
-                  className="p-2 hover:bg-secondary rounded-lg transition-colors"
-                >
-                  {copiedCode === appointment.bookingCode ? (
-                    <Check size={18} className="text-primary" />
-                  ) : (
-                    <Copy size={18} className="text-foreground/50 hover:text-primary" />
-                  )}
-                </button>
+            {!appointment.checkedIn && (
+              <div className="border-l border-border/40 pl-6 md:w-48">
+                <p className="text-xs text-foreground/50 uppercase tracking-wider mb-2">Booking Code</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-primary font-mono">{appointment.bookingCode}</span>
+                  <button
+                    onClick={() => copyToClipboard(appointment.bookingCode)}
+                    className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                  >
+                    {copiedCode === appointment.bookingCode ? (
+                      <Check size={18} className="text-primary" />
+                    ) : (
+                      <Copy size={18} className="text-foreground/50 hover:text-primary" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-foreground/50 mt-2">Present this code at check-in</p>
               </div>
-              <p className="text-xs text-foreground/50 mt-2">Present this code at check-in</p>
-            </div>
+            )}
           </div>
 
-          <div className="flex gap-3">
-            <Button variant="outline" className="border-primary text-primary hover:bg-secondary flex-1">
-              Reschedule
-            </Button>
-            <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive/10 flex-1">
-              Cancel
-            </Button>
-          </div>
+          {!appointment.checkedIn && (
+            <div className="flex gap-3">
+              <Button variant="outline" className="border-primary text-primary hover:bg-secondary flex-1">
+                Reschedule
+              </Button>
+              <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive/10 flex-1">
+                Cancel
+              </Button>
+            </div>
+          )}
         </Card>
       ))}
     </div>
