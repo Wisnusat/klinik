@@ -23,7 +23,8 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
     phone: '',
     address: '',
     bloodType: '',
-    gender: ''
+    gender: '',
+    dob: ''
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -36,6 +37,7 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
     if (!formData.address.trim()) newErrors.address = 'Address is required'
     if (!formData.bloodType) newErrors.bloodType = 'Blood type is required'
     if (!formData.gender) newErrors.gender = 'Gender is required'
+    if (!formData.dob) newErrors.dob = 'Date of birth is required'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -134,6 +136,20 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
             </SelectContent>
           </Select>
           {errors.gender && <p className="text-sm text-destructive">{errors.gender}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Date of Birth *</label>
+          <Input
+            type="date"
+            value={formData.dob}
+            onChange={(e) => {
+              setFormData({ ...formData, dob: e.target.value })
+              if (errors.dob) setErrors({ ...errors, dob: '' })
+            }}
+            max={new Date().toISOString().split('T')[0]}
+          />
+          {errors.dob && <p className="text-sm text-destructive">{errors.dob}</p>}
         </div>
       </div>
 

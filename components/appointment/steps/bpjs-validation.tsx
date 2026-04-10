@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
@@ -14,9 +14,6 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
   const [isValidating, setIsValidating] = useState(false)
   const [validationResult, setValidationResult] = useState<'valid' | 'invalid' | null>(null)
   const [error, setError] = useState('')
-
-  // Mock BPJS numbers for validation
-  const validBpjsNumbers = ['0000000000000001', '0000000000000002', '1234567890123456']
 
   const handleValidate = async () => {
     if (!bpjsNumber.trim()) {
@@ -37,12 +34,27 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
     setError('')
     setIsValidating(true)
 
-    // Simulate API call with delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    try {
+      const res = await fetch('/api/bpjs/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ bpjsNumber })
+      })
+      const json = await res.json()
 
-    const isValid = validBpjsNumbers.includes(bpjsNumber)
-    setValidationResult(isValid ? 'valid' : 'invalid')
-    setIsValidating(false)
+      if (json.success && json.data.isValid) {
+        setValidationResult('valid')
+      } else {
+        setValidationResult('invalid')
+      }
+    } catch (err) {
+      console.error('Failed to verify BPJS:', err)
+      setValidationResult('invalid')
+    } finally {
+      setIsValidating(false)
+    }
   }
 
   const handleContinue = () => {

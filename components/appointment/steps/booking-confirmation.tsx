@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
@@ -8,39 +9,72 @@ interface BookingConfirmationProps {
     name: string
     nik: string
     service: string
+    serviceName: string
     date: string
     time: string
-    phone: string
+    // phone: string
+    email?: string
+    address?: string
+    bloodType?: string
+    gender?: string
+    dob?: string
     paymentMethod: string
     bpjsNumber: string
+    patientId: string
   }
   onSubmit: (bookingCode: string) => void
 }
 
 export default function BookingConfirmation({ formData, onSubmit }: BookingConfirmationProps) {
-  const services: Record<string, string> = {
-    gp: 'General Practitioner',
-    pediatrics: 'Pediatrics',
-    dental: 'Dental',
-    internal: 'Internal Medicine',
-    cardiology: 'Cardiology',
-    eye: 'Eye Care',
-    igd: 'IGD (Emergency)',
-    operations: 'Operations'
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
-  const generateBookingCode = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let code = 'BK'
-    for (let i = 0; i < 8; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length))
+  const handleConfirm = async () => {
+    setIsSubmitting(true)
+    setError('')
+
+    try {
+      let finalPatientId = formData.patientId
+
+      // If missing patient ID, this is a new patient. Register them first!
+      if (!finalPatientId) {
+        const patientRes = await fetch('/api/patient', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+        const patientJson = await patientRes.json()
+        
+        if (patientJson.success && patientJson.data?.id) {
+          finalPatientId = patientJson.data.id
+        } else {
+          setError(patientJson.error || 'Failed to register patient profile')
+          setIsSubmitting(false)
+          return
+        }
+      }
+
+      const res = await fetch('/api/appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ...formData, patientId: finalPatientId })
+      })
+
+      const json = await res.json()
+
+      if (json.success) {
+        onSubmit(json.data.booking_code)
+      } else {
+        setError(json.error || 'Failed to create appointment')
+      }
+    } catch (err) {
+      console.error('Failed to submit appointment:', err)
+      setError('An error occurred while communicating with the server')
+    } finally {
+      setIsSubmitting(false)
     }
-    return code
-  }
-
-  const handleConfirm = () => {
-    const bookingCode = generateBookingCode()
-    onSubmit(bookingCode)
   }
 
   const formatDate = (dateString: string) => {
@@ -71,10 +105,10 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
               <p className="text-xs text-foreground/50 uppercase tracking-wider">NIK</p>
               <p className="text-foreground font-medium">{formData.nik}</p>
             </div>
-            <div>
+            {/* <div>
               <p className="text-xs text-foreground/50 uppercase tracking-wider">Phone</p>
               <p className="text-foreground font-medium">{formData.phone}</p>
-            </div>
+            </div> */}
           </div>
         </Card>
 
@@ -87,7 +121,7 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
           <div className="space-y-3">
             <div>
               <p className="text-xs text-foreground/50 uppercase tracking-wider">Service</p>
-              <p className="text-foreground font-medium">{services[formData.service as keyof typeof services]}</p>
+              <p className="text-foreground font-medium">{formData.serviceName}</p>
             </div>
             <div>
               <p className="text-xs text-foreground/50 uppercase tracking-wider">Date</p>
@@ -119,12 +153,6 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
                 <p className="text-foreground font-medium">{formData.bpjsNumber}</p>
               </div>
             )}
-            {/* {formData.paymentMethod === 'mandiri' && (
-              <div>
-                <p className="text-xs text-foreground/50 uppercase tracking-wider">Fee</p>
-                <p className="text-foreground font-medium">IDR 150,000</p>
-              </div>
-            )} */}
           </div>
         </Card>
 
@@ -149,12 +177,15 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
         </p>
       </Card>
 
+      {error && <p className="text-sm text-destructive">{error}</p>}
+
       <div className="flex flex-col gap-3">
         <Button
           onClick={handleConfirm}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base"
+          disabled={isSubmitting}
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-4"
         >
-          Confirm Appointment
+          {isSubmitting ? 'Confirming...' : 'Confirm Appointment'}
         </Button>
       </div>
     </div>
