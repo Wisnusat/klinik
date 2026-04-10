@@ -6,14 +6,15 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 
 interface NikVerificationProps {
-  onSubmit: (nik: string) => void
+  onSubmit: (nik: string, patientData: any, isNew: boolean) => void
 }
 
 export default function NikVerification({ onSubmit }: NikVerificationProps) {
   const [nik, setNik] = useState('')
   const [error, setError] = useState('')
+  const [isChecking, setIsChecking] = useState(false)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!nik.trim()) {
       setError('NIK is required')
       return
@@ -30,7 +31,26 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
     }
 
     setError('')
-    onSubmit(nik)
+    setIsChecking(true)
+
+    try {
+      const res = await fetch('/api/patients/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nik })
+      })
+      const json = await res.json()
+
+      if (json.success) {
+        onSubmit(nik, json.data.patient, json.data.isNew)
+      } else {
+        setError(json.error || 'Failed to verify NIK')
+      }
+    } catch (err) {
+      setError('An error occurred during verification')
+    } finally {
+      setIsChecking(false)
+    }
   }
 
   return (
@@ -42,7 +62,7 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
 
       <Card className="p-6 bg-secondary/30 border-secondary/50">
         <p className="text-sm text-foreground/70 mb-4">
-          We'll check if you're an existing patient. If not, you'll need to provide additional profile information.
+          We'll check if you're an existing patient. If not, we'll verify your data securely.
         </p>
       </Card>
 
@@ -56,6 +76,7 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
             setNik(e.target.value.replace(/\D/g, '').slice(0, 16))
             setError('')
           }}
+          disabled={isChecking}
           maxLength={16}
           className="text-lg tracking-widest"
         />
@@ -65,9 +86,10 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
 
       <Button
         onClick={handleSubmit}
+        disabled={isChecking}
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
       >
-        Continue
+        {isChecking ? 'Verifying...' : 'Continue'}
       </Button>
     </div>
   )

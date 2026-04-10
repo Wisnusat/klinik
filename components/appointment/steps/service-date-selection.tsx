@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -13,51 +13,79 @@ import {
 import { Input } from '@/components/ui/input'
 import { Calendar } from 'lucide-react'
 
+interface PoliService {
+  id: string
+  name: string
+  code: string
+}
+
+interface AppointmentSlot {
+  id: string
+  start_time: string
+  end_time: string
+  is_active: boolean
+  practitioners: {
+    full_name: string
+    specialization: string
+  } | null
+}
+
 interface ServiceDateSelectionProps {
   onSubmit: (data: any) => void
 }
 
 export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionProps) {
-  const services = [
-    { id: 'gp', name: 'General Practitioner', quota: 8 },
-    { id: 'pediatrics', name: 'Pediatrics', quota: 6 },
-    { id: 'dental', name: 'Dental', quota: 5 },
-    { id: 'internal', name: 'Internal Medicine', quota: 7 },
-    { id: 'cardiology', name: 'Cardiology', quota: 4 },
-    { id: 'eye', name: 'Eye Care', quota: 5 },
-    { id: 'igd', name: 'IGD (Emergency)', quota: 20 },
-    { id: 'operations', name: 'Operations', quota: 3 }
-  ]
+  const [services, setServices] = useState<PoliService[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Mock quota data for dates (remaining appointments)
-  const quotaByDate: Record<string, number> = {
-    '2024-02-28': 6,
-    '2024-02-29': 8,
-    '2024-03-01': 5,
-    '2024-03-02': 7,
-    '2024-03-03': 4,
-    '2024-03-04': 8
-  }
-
-  const timeSlots = [
-    '08:00 AM',
-    '09:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '01:00 PM',
-    '02:00 PM',
-    '03:00 PM',
-    '04:00 PM'
-  ]
+  const [slots, setSlots] = useState<AppointmentSlot[]>([])
+  const [isSlotsLoading, setIsSlotsLoading] = useState(false)
 
   const [selectedService, setSelectedService] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const getAvailableQuota = (date: string) => {
-    return quotaByDate[date] || 8
-  }
+  useEffect(() => {
+    async function fetchPoli() {
+      try {
+        const res = await fetch('/api/poli')
+        const json = await res.json()
+        if (json.success) {
+          setServices(json.data)
+        }
+      } catch (err) {
+        console.error('Failed to fetch poli services:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchPoli()
+  }, [])
+
+  useEffect(() => {
+    if (!selectedService) {
+      setSlots([])
+      setSelectedTime('')
+      return
+    }
+
+    async function fetchSlots() {
+      setIsSlotsLoading(true)
+      try {
+        const res = await fetch(`/api/poli/slots/${selectedService}`)
+        const json = await res.json()
+        if (json.success) {
+          setSlots(json.data || [])
+        }
+      } catch (err) {
+        console.error('Failed to fetch slots:', err)
+      } finally {
+        setIsSlotsLoading(false)
+      }
+    }
+    fetchSlots()
+  }, [selectedService])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -72,6 +100,7 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
     if (validateForm()) {
       onSubmit({
         service: selectedService,
+        serviceName: services.find(s => s.id === selectedService)?.name || '',
         date: selectedDate,
         time: selectedTime
       })
@@ -82,7 +111,7 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Select Service & Date</h2>
-        <p className="text-foreground/60">Choose your preferred service and appointment date</p>
+        <p className="text-foreground/60">Choose your preferred service and appointment schedule</p>
       </div>
 
       <div className="space-y-4">
@@ -91,9 +120,9 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
           <Select value={selectedService} onValueChange={(value) => {
             setSelectedService(value)
             if (errors.service) setErrors({ ...errors, service: '' })
-          }}>
+          }} disabled={isLoading}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a service" />
+              <SelectValue placeholder={isLoading ? "Loading services..." : "Select a service"} />
             </SelectTrigger>
             <SelectContent>
               {services.map((service) => (
@@ -122,35 +151,41 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
             />
           </div>
           {errors.date && <p className="text-sm text-destructive">{errors.date}</p>}
-          
-          {selectedDate && (
-            <Card className="p-3 bg-secondary/30 border-secondary/50">
-              <p className="text-sm text-foreground/70">
-                <span className="font-semibold text-primary">{getAvailableQuota(selectedDate)} slots</span> available on this date
-              </p>
-            </Card>
-          )}
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Time Slot *</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {timeSlots.map((slot) => (
-              <button
-                key={slot}
-                onClick={() => {
-                  setSelectedTime(slot)
-                  if (errors.time) setErrors({ ...errors, time: '' })
-                }}
-                className={`p-3 rounded-lg border-2 transition-all ${
-                  selectedTime === slot
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border bg-background text-foreground hover:border-primary'
-                }`}
-              >
-                {slot}
-              </button>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {isSlotsLoading ? (
+              <p className="text-sm text-foreground/60 col-span-full">Loading available slots...</p>
+            ) : !selectedService ? (
+              <p className="text-sm text-foreground/60 col-span-full">Please select a service first.</p>
+            ) : slots.length === 0 ? (
+              <p className="text-sm text-foreground/60 col-span-full">No slots available for this service.</p>
+            ) : (
+              slots.map((slot) => {
+                const formattedTime = `${slot.start_time?.slice(0, 5) || '??:??'} - ${slot.end_time?.slice(0, 5) || '??:??'}`
+                const practitionerName = slot.practitioners?.full_name || ''
+                
+                return (
+                  <button
+                    key={slot.id}
+                    onClick={() => {
+                      setSelectedTime(formattedTime)
+                      if (errors.time) setErrors({ ...errors, time: '' })
+                    }}
+                    className={`p-3 rounded-lg border-2 transition-all flex flex-col items-start text-left ${
+                      selectedTime === formattedTime
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-border bg-background text-foreground hover:border-primary'
+                    }`}
+                  >
+                    <span className="font-semibold text-sm truncate w-full" title={practitionerName}>{practitionerName}</span>
+                    <span className="text-sm opacity-90">{formattedTime}</span>
+                  </button>
+                )
+              })
+            )}
           </div>
           {errors.time && <p className="text-sm text-destructive">{errors.time}</p>}
         </div>
@@ -181,6 +216,7 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
       <Button
         onClick={handleSubmit}
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+        disabled={isLoading}
       >
         Continue to Payment
       </Button>

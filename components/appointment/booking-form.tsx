@@ -21,24 +21,38 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
     nik: '',
     name: '',
     email: '',
-    phone: '',
+    // phone: '',
     address: '',
     bloodType: '',
     gender: '',
+    dob: '',
     service: '',
+    serviceName: '',
     date: '',
     time: '',
     paymentMethod: '',
     bpjsNumber: '',
-    bookingCode: ''
+    bookingCode: '',
+    patientId: '',
   })
 
-  // Mock database of existing NIKs
-  const existingNiks = ['1234567890123456', '9876543210987654', '5555555555555555']
-
-  const handleNikSubmit = (nik: string) => {
-    setFormData({ ...formData, nik })
-    const exists = existingNiks.includes(nik)
+  const handleNikSubmit = (nik: string, patientData: any, isNew: boolean) => {
+    setFormData({ 
+      ...formData, 
+      nik,
+      patientId: patientData?.id || '',
+      name: patientData?.full_name || '',
+      email: patientData?.email || '',
+      // phone: patientData?.phone || '',
+      address: patientData?.address || '',
+      bloodType: patientData?.blood_type || '',
+      gender: patientData?.gender || '',
+      dob: patientData?.date_of_birth || '',
+      bpjsNumber: patientData?.bpjs_no || '',
+    })
+    
+    // If it's not a new patient, we can skip the profile form
+    const exists = !isNew
     setNikExists(exists)
     setStep(exists ? 3 : 2)
   }
@@ -158,16 +172,19 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
                     nik: '',
                     name: '',
                     email: '',
-                    phone: '',
+                    // phone: '',
                     address: '',
                     bloodType: '',
                     gender: '',
+                    dob: '',
                     service: '',
+                    serviceName: '',
                     date: '',
                     time: '',
                     paymentMethod: '',
                     bpjsNumber: '',
-                    bookingCode: ''
+                    bookingCode: '',
+                    patientId: '',
                   })
                   setNikExists(false)
                 }}
