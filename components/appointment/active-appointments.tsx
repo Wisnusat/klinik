@@ -11,7 +11,45 @@ interface Appointment {
   appointment_date: string
   appointment_time: string
   status: string
-  poli_service: { name: string } | null
+  poli_service: { id: string, name: string } | null
+  queues?: { queue_number: string }[] | null
+}
+
+function CurrentQueueDisplay({ poliId }: { poliId: string }) {
+  const [currentQueue, setCurrentQueue] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchCurrentQueue() {
+      try {
+        const res = await fetch(`/api/queue/current?poli_id=${poliId}`)
+        const json = await res.json()
+        if (json.success) {
+          setCurrentQueue(json.data.current)
+        }
+      } catch (err) {
+        console.error('Failed to fetch current queue:', err)
+      }
+    }
+
+    fetchCurrentQueue()
+    const interval = setInterval(fetchCurrentQueue, 10000)
+    return () => clearInterval(interval)
+  }, [poliId])
+
+  return (
+    <>
+      <p className="text-foreground font-semibold">
+        {currentQueue ? (
+          <span className="text-primary font-mono text-xl">{currentQueue}</span>
+        ) : (
+          <span className="text-primary">-</span>
+        )}
+      </p>
+      <p className="text-xs text-foreground/50 mt-1">
+        {currentQueue ? 'Now serving' : 'Please wait closely'}
+      </p>
+    </>
+  )
 }
 
 export default function ActiveAppointments() {
@@ -70,6 +108,9 @@ export default function ActiveAppointments() {
     <div className="space-y-6">
       {appointments.map((appointment) => {
         const isCheckedIn = appointment.status === 'arrived' || appointment.status === 'checked_in'
+        const queueNumber = appointment.queues && appointment.queues.length > 0 
+          ? appointment.queues[0].queue_number 
+          : null
         
         return (
           <Card key={appointment.id} className="p-6 border border-border/40 hover:shadow-lg transition-all">
@@ -111,10 +152,16 @@ export default function ActiveAppointments() {
                       </div>
                       <div>
                         <p className="text-xs text-foreground/50 uppercase tracking-wider">Current Queue</p>
-                        <p className="text-foreground font-semibold">
-                          <span className="text-primary">-</span>
-                        </p>
-                        <p className="text-xs text-foreground/50 mt-1">Visit clinic to get a queue number</p>
+                        {isCheckedIn && appointment.poli_service?.id ? (
+                          <CurrentQueueDisplay poliId={appointment.poli_service.id} />
+                        ) : (
+                          <>
+                            <p className="text-foreground font-semibold">
+                              <span className="text-primary">-</span>
+                            </p>
+                            <p className="text-xs text-foreground/50 mt-1">Visit clinic to get a queue number</p>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -124,9 +171,9 @@ export default function ActiveAppointments() {
                       </div>
                       <div>
                         <p className="text-xs text-foreground/50 uppercase tracking-wider">Your Queue Number</p>
-                        {isCheckedIn ? (
+                        {queueNumber ? (
                           <p className="text-foreground font-semibold">
-                            <span className="text-primary">Checked In</span>
+                            <span className="text-primary font-mono text-xl">{queueNumber}</span>
                           </p>
                         ) : (
                           <p className="text-foreground/70 text-sm">

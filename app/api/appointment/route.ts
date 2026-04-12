@@ -100,7 +100,8 @@ export async function GET() {
             .from('appointments')
             .select(`
                 id, booking_code, appointment_date, appointment_time, status, notes,
-                poli_service:poli_service_id (name)
+                poli_service:poli_service_id (id, name),
+                queues(queue_number)
             `)
             .eq('device_id', deviceId)
             .order('appointment_date', { ascending: false })

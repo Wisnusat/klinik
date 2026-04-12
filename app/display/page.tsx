@@ -38,48 +38,31 @@ export default function QueueDisplay() {
     return () => clearInterval(timer)
   }, [])
 
-  // Mock queue data - in real app, this would come from API/WebSocket
+  // Fetch real queue data
   useEffect(() => {
-    const mockQueues = {
-      dental: {
-        current: 'D-015',
-        next: 'D-016',
-        service: 'Dental',
-        totalWaiting: 8,
-        doctor: 'Dr. Michael Chen'
-      },
-      general: {
-        current: 'A-042',
-        next: 'A-043',
-        service: 'General',
-        totalWaiting: 12,
-        doctor: 'Dr. Sarah Johnson'
+    const fetchQueue = async () => {
+      try {
+        const res = await fetch(`/api/queue?service=${service}`)
+        const json = await res.json()
+        if (json.success) {
+          setQueueData({
+            current: json.data.current,
+            next: json.data.next,
+            service: json.data.service || (service === 'dental' ? 'Dental' : 'General'),
+            totalWaiting: json.data.totalWaiting || 0,
+            doctor: json.data.doctor || (service === 'dental' ? 'Dr. Michael Chen' : 'Dr. Sarah Johnson')
+          })
+        }
+      } catch (err) {
+        console.error('Failed to fetch queue data:', err)
       }
     }
 
-    const initialData = mockQueues[service as keyof typeof mockQueues] || mockQueues.general
-    setQueueData(initialData)
+    // Initial fetch
+    fetchQueue()
 
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setQueueData(prev => {
-        if (Math.random() > 0.7 && prev.current) {
-          // Simulate next patient being called
-          const prefix = service === 'dental' ? 'D' : 'A'
-          const currentNum = parseInt(prev.current.split('-')[1])
-          const nextNum = currentNum + 1
-          const nextNextNum = nextNum + 1
-          
-          return {
-            ...prev,
-            current: `${prefix}-${String(nextNum).padStart(3, '0')}`,
-            next: `${prefix}-${String(nextNextNum).padStart(3, '0')}`,
-            totalWaiting: Math.max(0, prev.totalWaiting - 1)
-          }
-        }
-        return prev
-      })
-    }, 15000) // Update every 15 seconds
+    // Poll every 5 seconds
+    const interval = setInterval(fetchQueue, 5000)
 
     return () => clearInterval(interval)
   }, [service])
