@@ -11,17 +11,17 @@ interface Appointment {
   appointment_date: string
   appointment_time: string
   status: string
-  poli_service: { id: string, name: string } | null
+  poli_service: { id: string, name: string, code: string } | null
   queues?: { queue_number: string }[] | null
 }
 
-function CurrentQueueDisplay({ poliId }: { poliId: string }) {
+function CurrentQueueDisplay({ poliCode }: { poliCode: string }) {
   const [currentQueue, setCurrentQueue] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchCurrentQueue() {
       try {
-        const res = await fetch(`/api/queue/current?poli_id=${poliId}`)
+        const res = await fetch(`/api/queue/?service=${poliCode}`)
         const json = await res.json()
         if (json.success) {
           setCurrentQueue(json.data.current)
@@ -34,7 +34,7 @@ function CurrentQueueDisplay({ poliId }: { poliId: string }) {
     fetchCurrentQueue()
     const interval = setInterval(fetchCurrentQueue, 10000)
     return () => clearInterval(interval)
-  }, [poliId])
+  }, [poliCode])
 
   return (
     <>
@@ -152,8 +152,8 @@ export default function ActiveAppointments() {
                       </div>
                       <div>
                         <p className="text-xs text-foreground/50 uppercase tracking-wider">Current Queue</p>
-                        {isCheckedIn && appointment.poli_service?.id ? (
-                          <CurrentQueueDisplay poliId={appointment.poli_service.id} />
+                        {isCheckedIn && appointment.poli_service?.code ? (
+                          <CurrentQueueDisplay poliCode={appointment.poli_service.code} />
                         ) : (
                           <>
                             <p className="text-foreground font-semibold">

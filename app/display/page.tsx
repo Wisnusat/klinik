@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Users, ArrowRight, Volume2, Clock, MapPin } from 'lucide-react'
+import { Clock, Users } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 type QueueData = {
   current: string | null
@@ -27,7 +26,6 @@ export default function QueueDisplay() {
   })
 
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [isSoundOn, setIsSoundOn] = useState(true)
 
   // Real-time clock
   useEffect(() => {
