@@ -1,5 +1,4 @@
-import { createClient as createServerClient } from '@/lib/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
 import { apiResponse } from '@/lib/api/response'
 import { cookies } from 'next/headers'
 
@@ -12,107 +11,107 @@ function generateBookingCode() {
     return code
 }
 
+// Parse time from range string like "08:00 - 12:00" → "08:00:00"
+function parseTime(time: string): string {
+    const t = time.length > 5 ? time.substring(0, 5) : time
+    return `${t}:00`
+}
+
+// Get or create device_id from cookie
+async function getOrCreateDeviceId(): Promise<string> {
+    const cookieStore = await cookies()
+    const existing = cookieStore.get('device_id')?.value
+    if (existing) return existing
+
+    const newId = crypto.randomUUID()
+    cookieStore.set('device_id', newId, {
+        maxAge: 60 * 60 * 24 * 365,
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax',
+    })
+    return newId
+}
+
 export async function POST(req: Request) {
     try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-        let supabase = await createServerClient()
-        if (serviceKey && supabaseUrl) {
-            supabase = createSupabaseClient(supabaseUrl, serviceKey)
-        }
-
         const body = await req.json()
-        const {
-            patientId, service, date, time, paymentMethod
-        } = body
+        const { patientId, service, date, time, paymentMethod } = body
 
         if (!patientId || !service || !date || !time || !paymentMethod) {
-            return apiResponse.badRequest('Missing required fields')
+            return apiResponse.badRequest('Missing required fields: patientId, service, date, time, paymentMethod')
         }
 
-        // 1. Manage Device ID Cookie
-        const cookieStore = await cookies()
-        let deviceId = cookieStore.get('device_id')?.value
-        if (!deviceId) {
-            deviceId = crypto.randomUUID()
-            cookieStore.set('device_id', deviceId, {
-                maxAge: 60 * 60 * 24 * 365, // 1 year
-                path: '/',
-                httpOnly: true,
-                sameSite: 'lax'
-            })
-        }
-
-        // 2. Insert Appointment
+        const deviceId = await getOrCreateDeviceId()
         const bookingCode = generateBookingCode()
-        const { data: appointmentData, error: appointmentError } = await supabase
-            .from('appointments')
-            .insert({
-                patient_id: patientId,
-                poli_service_id: service, // The service ID from the form
-                booking_code: bookingCode,
-                appointment_date: date,
-                // Time from component is a range like "08:00 - 12:00", we just extract the start_time
-                appointment_time: time.length > 5 ? time.substring(0, 5) + ':00' : time + ':00',
-                payment_type: paymentMethod === 'bpjs' ? 'bpjs' : 'umum',
-                status: 'pending',
-                device_id: deviceId
-            })
-            .select('*')
-            .single()
+        const supabase = await createClient()
 
-        if (appointmentError) {
-            console.error('Appointment insert error:', appointmentError)
+        const { data, error } = await supabase.rpc('create_appointment', {
+            p_patient_id: patientId,
+            p_poli_service_id: service,
+            p_booking_code: bookingCode,
+            p_appointment_date: date,
+            p_appointment_time: parseTime(time),
+            p_payment_type: paymentMethod === 'bpjs' ? 'bpjs' : 'umum',
+            p_device_id: deviceId,
+        })
+
+        if (error) {
+            console.error('create_appointment RPC error:', error)
+
+            // Surface validation errors from the RPC
+            if (error.message?.includes('POLI_NOT_FOUND')) {
+                return apiResponse.notFound('Poli service not found or inactive')
+            }
+            if (error.message?.includes('PATIENT_NOT_FOUND')) {
+                return apiResponse.notFound('Patient not found')
+            }
+            if (error.message?.includes('INVALID_PAYMENT_TYPE')) {
+                return apiResponse.badRequest('payment_type must be umum or bpjs')
+            }
+            if (error.code === '23505') {
+                return apiResponse.conflict('Booking code already exists, please try again')
+            }
+
             return apiResponse.serverError('Failed to create appointment')
         }
 
         return apiResponse.created({
             booking_code: bookingCode,
-            appointment: appointmentData
+            appointment: data,
         })
 
-    } catch (e: any) {
-        console.error('Appointment Create API error:', e)
+    } catch (e) {
+        console.error('Appointment POST error:', e)
         return apiResponse.serverError()
     }
 }
 
 export async function GET() {
     try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-        let supabase = await createServerClient()
-        if (serviceKey && supabaseUrl) {
-            supabase = createSupabaseClient(supabaseUrl, serviceKey)
-        }
-
         const cookieStore = await cookies()
         const deviceId = cookieStore.get('device_id')?.value
 
+        // No cookie → no appointments to show
         if (!deviceId) {
-            return apiResponse.ok([]) // No appointments for this device yet
+            return apiResponse.ok([])
         }
 
-        // We fetch appointments matching this device_id directly from the column
-        const { data: appointments, error } = await supabase
-            .from('appointments')
-            .select(`
-                id, booking_code, appointment_date, appointment_time, status, notes,
-                poli_service:poli_service_id (name)
-            `)
-            .eq('device_id', deviceId)
-            .order('appointment_date', { ascending: false })
+        const supabase = await createClient()
+
+        const { data, error } = await supabase.rpc('get_appointments_by_device', {
+            p_device_id: deviceId,
+        })
 
         if (error) {
-            console.error('Fetch appointments error:', error)
+            console.error('get_appointments_by_device RPC error:', error)
             return apiResponse.serverError('Failed to fetch appointments')
         }
 
-        return apiResponse.ok(appointments || [])
-    } catch (e: any) {
-        console.error('Appointment Fetch API error:', e)
+        return apiResponse.ok(data ?? [])
+
+    } catch (e) {
+        console.error('Appointment GET error:', e)
         return apiResponse.serverError()
     }
 }

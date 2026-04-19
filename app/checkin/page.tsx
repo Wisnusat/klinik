@@ -11,6 +11,7 @@ import HeaderCheckin from '@/components/header-checkin'
 import Image from 'next/image'
 
 type AppointmentLookup = {
+  id?: string
   bookingCode: string
   service: string
   date: string
@@ -35,28 +36,6 @@ function generateQueueNumber(prefix: string) {
 }
 
 export default function CheckinPage() {
-  const mockAppointments = useMemo<AppointmentLookup[]>(
-    () => [
-      {
-        bookingCode: 'BK12A5F7X',
-        service: 'General Practitioner',
-        date: '2024-03-10',
-        time: '10:00',
-        doctor: 'Dr. Sarah Johnson',
-        location: 'Room 101'
-      },
-      {
-        bookingCode: 'BK78Q9M2L',
-        service: 'Dental',
-        date: '2024-03-15',
-        time: '14:00',
-        doctor: 'Dr. Michael Chen',
-        location: 'Dental Clinic'
-      }
-    ],
-    []
-  )
-
   const [bookingCode, setBookingCode] = useState('')
   const [appointment, setAppointment] = useState<AppointmentLookup | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -77,7 +56,10 @@ export default function CheckinPage() {
     }
   }, [isCheckedIn, queueNumber])
 
-  const handleSearch = () => {
+  const [isSearching, setIsSearching] = useState(false)
+  const [isCheckingIn, setIsCheckingIn] = useState(false)
+
+  const handleSearch = async () => {
     const normalized = bookingCode.trim().toUpperCase()
 
     setError(null)
@@ -90,21 +72,50 @@ export default function CheckinPage() {
       return
     }
 
-    const found = mockAppointments.find((a) => a.bookingCode === normalized)
-    if (!found) {
-      setError('Data appointment tidak ditemukan. Periksa kembali kode booking kamu.')
-      return
-    }
+    setIsSearching(true)
+    try {
+      const res = await fetch(`/api/checkin?code=${normalized}`)
+      const json = await res.json()
 
-    setAppointment(found)
+      if (json.success) {
+        setAppointment(json.data.appointment)
+        if (json.data.isCheckedIn) {
+          setIsCheckedIn(true)
+          setQueueNumber(json.data.queueNumber)
+        }
+      } else {
+        setError(json.error || 'Data appointment tidak ditemukan. Periksa kembali kode booking kamu.')
+      }
+    } catch (err) {
+      setError('Terjadi kesalahan saat mencari data appointment.')
+    } finally {
+      setIsSearching(false)
+    }
   }
 
-  const handleCheckIn = () => {
-    if (!appointment) return
+  const handleCheckIn = async () => {
+    if (!appointment || !appointment.id) return
 
-    const prefix = appointment.service.toLowerCase().includes('dental') ? 'D' : 'A'
-    setQueueNumber(generateQueueNumber(prefix))
-    setIsCheckedIn(true)
+    setIsCheckingIn(true)
+    try {
+      const res = await fetch(`/api/checkin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appointmentId: appointment.id })
+      })
+      const json = await res.json()
+
+      if (json.success) {
+        setQueueNumber(json.data.queueNumber)
+        setIsCheckedIn(true)
+      } else {
+        setError(json.error || 'Gagal melakukan check-in.')
+      }
+    } catch (err) {
+      setError('Terjadi kesalahan saat proses check-in.')
+    } finally {
+      setIsCheckingIn(false)
+    }
   }
 
   return (
@@ -145,10 +156,11 @@ export default function CheckinPage() {
                   />
                   <Button
                     onClick={handleSearch}
+                    disabled={isSearching}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground h-11"
                   >
                     <Search className="mr-2" size={18} />
-                    Cari
+                    {isSearching ? 'Mencari...' : 'Cari'}
                   </Button>
                 </div>
               </div>
@@ -199,9 +211,10 @@ export default function CheckinPage() {
                     <div className="mt-5">
                       <Button
                         onClick={handleCheckIn}
+                        disabled={isCheckingIn}
                         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-11"
                       >
-                        Check-in Sekarang
+                        {isCheckingIn ? 'Memproses...' : 'Check-in Sekarang'}
                       </Button>
                       <p className="text-xs text-foreground/50 mt-3">
                         Nomor antrian akan diberikan setelah check-in.

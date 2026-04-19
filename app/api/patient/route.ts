@@ -1,68 +1,66 @@
-import { createClient as createServerClient } from '@/lib/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
 import { apiResponse } from '@/lib/api/response'
-
-function generateMedicalRecordNo() {
-    return 'MR/' + new Date().getFullYear() + '/' + Math.floor(100000 + Math.random() * 900000)
-}
 
 export async function POST(req: Request) {
     try {
         const body = await req.json()
         const {
-            nik, name, email, phone, address, bloodType, gender, dob, bpjsNumber
+            nik, name, email, phone, address,
+            bloodType, gender, dob, bpjsNumber,
         } = body
 
         if (!nik || !name) {
-            return apiResponse.badRequest('NIK and Name are required')
+            return apiResponse.badRequest('NIK and name are required')
         }
 
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-        
-        let supabase = await createServerClient()
-        if (serviceKey && supabaseUrl) {
-            supabase = createSupabaseClient(supabaseUrl, serviceKey)
+        if (!dob) {
+            return apiResponse.badRequest('Date of birth is required')
         }
 
-        // Check if patient already exists (in case form is re-submitted)
-        const { data: existingPatient } = await supabase
-            .from('patients')
-            .select('id')
-            .eq('nik', nik)
-            .maybeSingle()
-
-        if (existingPatient) {
-            return apiResponse.ok(existingPatient)
+        // Validate date format
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) {
+            return apiResponse.badRequest('date_of_birth must be YYYY-MM-DD format')
         }
 
-        const patientData = {
-            medical_record_no: generateMedicalRecordNo(),
-            nik,
-            full_name: name,
-            email: email || null,
-            phone: phone || null,
-            address: address || null,
-            blood_type: bloodType || null,
-            gender: gender || 'unknown',
-            date_of_birth: dob || '1990-01-01',
-            bpjs_no: bpjsNumber || null
-        }
+        const supabase = await createClient()
 
-        const { data: newPatient, error: insertError } = await supabase
-            .from('patients')
-            .insert(patientData)
-            .select('id')
-            .single()
+        const { data, error } = await supabase.rpc('create_patient_public', {
+            p_nik: nik,
+            p_full_name: name,
+            p_gender: gender ?? 'unknown',
+            p_date_of_birth: dob,
+            p_email: email ?? null,
+            p_phone: phone ?? null,
+            p_address: address ?? null,
+            p_blood_type: bloodType ?? null,
+            p_bpjs_no: bpjsNumber ?? null,
+        })
 
-        if (insertError) {
-            console.error('Failed to create patient:', insertError)
+        if (error) {
+            console.error('create_patient_public RPC error:', error)
+
+            if (error.message?.includes('NIK_REQUIRED')) {
+                return apiResponse.badRequest('NIK is required')
+            }
+            if (error.message?.includes('NAME_REQUIRED')) {
+                return apiResponse.badRequest('Name is required')
+            }
+            if (error.message?.includes('INVALID_GENDER')) {
+                return apiResponse.badRequest('gender must be male, female, other, or unknown')
+            }
+            if (error.message?.includes('NO_ORGANIZATION_FOUND')) {
+                return apiResponse.serverError('System configuration error — no active organization found')
+            }
+            if (error.code === '23505') {
+                return apiResponse.conflict('A patient with this NIK or BPJS number already exists')
+            }
+
             return apiResponse.serverError('Failed to register patient')
         }
 
-        return apiResponse.ok(newPatient)
+        return apiResponse.ok(data)
 
-    } catch (e: any) {
+    } catch (e) {
         console.error('Patient Creation API error:', e)
         return apiResponse.serverError()
     }
