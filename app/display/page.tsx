@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card'
 import { Clock, Users } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 type QueueData = {
   current: string | null
@@ -13,7 +13,7 @@ type QueueData = {
   doctor: string
 }
 
-export default function QueueDisplay() {
+const QueueDisplay = () => {
   const searchParams = useSearchParams()
   const service = searchParams.get('s') || 'general'
   
@@ -188,5 +188,13 @@ export default function QueueDisplay() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function QueueDisplayPage() {
+  return (
+    <Suspense>
+      <QueueDisplay />
+    </Suspense>
   )
 }
