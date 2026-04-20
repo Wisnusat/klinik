@@ -104,10 +104,6 @@ export default function AppointmentHistory() {
                 {appointment.appointment_time.substring(0, 5)}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <User size={16} className="text-foreground/50 flex-shrink-0" />
-              <span className="text-sm text-foreground/70">Doctor Not Defined</span>
-            </div>
           </div>
         </Card>
       ))}
