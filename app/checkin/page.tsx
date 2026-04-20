@@ -18,6 +18,7 @@ type AppointmentLookup = {
   time: string
   doctor: string
   location: string
+  patientName: string
 }
 
 function formatDate(dateString: string) {
@@ -195,7 +196,7 @@ export default function CheckinPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <User size={18} className="text-primary shrink-0" />
-                        <span className="text-foreground/70">{appointment.doctor}</span>
+                        <span className="text-foreground/70">{appointment.patientName}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <MapPin size={18} className="text-primary shrink-0" />
