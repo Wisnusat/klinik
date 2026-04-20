@@ -270,7 +270,7 @@ export default function CheckinPage() {
                         Halaman akan otomatis reset dalam <span className="font-semibold text-primary">10 detik</span> untuk pasien berikutnya.
                       </p>
                       <div className="mt-2 space-y-1 text-sm text-foreground/60">
-                        <p>1. Datang ke meja administrasi dan tunjukkan kode booking.</p>
+                        <p>1. Datang ke poli yang dituju.</p>
                         <p>2. Siapkan identitas (KTP) dan kartu BPJS (jika menggunakan BPJS).</p>
                         <p>3. Tunggu panggilan sesuai nomor antrian.</p>
                       </div>

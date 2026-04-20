@@ -43,7 +43,7 @@ export default function AppointmentHistory() {
   }
 
   const getStatusIcon = (status: string) => {
-    return status === 'completed' ? (
+    return status === 'checked_in' ? (
       <CheckCircle size={20} className="text-primary" />
     ) : (
       <XCircle size={20} className="text-destructive" />
@@ -51,7 +51,7 @@ export default function AppointmentHistory() {
   }
 
   const getStatusStyles = (status: string) => {
-    if (status === 'completed') {
+    if (status === 'checked_in') {
       return 'bg-primary/10 text-primary'
     }
     return 'bg-destructive/10 text-destructive'
