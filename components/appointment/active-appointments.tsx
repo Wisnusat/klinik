@@ -64,7 +64,7 @@ export default function ActiveAppointments() {
         const json = await res.json()
         if (json.success && json.data.length > 0) {
           // Filter active statuses
-          const activeStatuses = ['pending', 'booked', 'arrived', 'checked_in']
+          const activeStatuses = ['pending', 'booked', 'arrived']
           setAppointments(json.data.filter((a: Appointment) => activeStatuses.includes(a.status)))
         }
       } catch (err) {
