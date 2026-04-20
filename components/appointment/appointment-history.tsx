@@ -25,7 +25,7 @@ export default function AppointmentHistory() {
         const json = await res.json()
         if (json.success && json.data.length > 0) {
           // Filter history statuses
-          const historyStatuses = ['completed', 'cancelled', 'no_show']
+          const historyStatuses = ['checked_in']
           setAppointments(json.data.filter((a: Appointment) => historyStatuses.includes(a.status)))
         }
       } catch (err) {
