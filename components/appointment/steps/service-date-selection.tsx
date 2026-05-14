@@ -24,7 +24,7 @@ interface AppointmentSlot {
   start_time: string
   end_time: string
   is_active: boolean
-  practitioners: {
+  practitioner: {
     full_name: string
     specialization: string
   } | null
@@ -165,8 +165,8 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
             ) : (
               slots.map((slot) => {
                 const formattedTime = `${slot.start_time?.slice(0, 5) || '??:??'} - ${slot.end_time?.slice(0, 5) || '??:??'}`
-                const practitionerName = slot.practitioners?.full_name || ''
-                
+                const practitionerName = slot.practitioner?.full_name || ''
+
                 return (
                   <button
                     key={slot.id}
@@ -174,11 +174,10 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
                       setSelectedTime(formattedTime)
                       if (errors.time) setErrors({ ...errors, time: '' })
                     }}
-                    className={`p-3 rounded-lg border-2 transition-all flex flex-col items-start text-left ${
-                      selectedTime === formattedTime
+                    className={`p-3 rounded-lg border-2 transition-all flex flex-col items-start text-left ${selectedTime === formattedTime
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border bg-background text-foreground hover:border-primary'
-                    }`}
+                      }`}
                   >
                     <span className="font-semibold text-sm truncate w-full" title={practitionerName}>{practitionerName}</span>
                     <span className="text-sm opacity-90">{formattedTime}</span>

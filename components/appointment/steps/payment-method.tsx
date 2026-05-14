@@ -15,9 +15,9 @@ export default function PaymentMethod({ onSubmit }: PaymentMethodProps) {
 
   const paymentMethods = [
     {
-      id: 'mandiri',
-      name: 'Mandiri',
-      description: 'Cash or Debit Payment',
+      id: 'non-bpjs',
+      name: 'Non-BPJS',
+      description: 'Tunai atau Debit',
       icon: Building2,
       details: 'Account number will be provided after confirmation'
     },
@@ -56,19 +56,17 @@ export default function PaymentMethod({ onSubmit }: PaymentMethodProps) {
                 setSelectedMethod(method.id)
                 setError('')
               }}
-              className={`w-full text-left p-6 rounded-lg border-2 transition-all ${
-                selectedMethod === method.id
+              className={`w-full text-left p-6 rounded-lg border-2 transition-all ${selectedMethod === method.id
                   ? 'border-primary bg-primary/5'
                   : 'border-border bg-background hover:border-primary/50'
-              }`}
+                }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-lg ${
-                    selectedMethod === method.id
+                  <div className={`p-3 rounded-lg ${selectedMethod === method.id
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary text-secondary-foreground'
-                  }`}>
+                    }`}>
                     <Icon size={24} />
                   </div>
                   <div>
@@ -77,11 +75,10 @@ export default function PaymentMethod({ onSubmit }: PaymentMethodProps) {
                     <p className="text-xs text-foreground/50 mt-2">{method.details}</p>
                   </div>
                 </div>
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                  selectedMethod === method.id
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedMethod === method.id
                     ? 'border-primary bg-primary'
                     : 'border-border'
-                }`}>
+                  }`}>
                   {selectedMethod === method.id && (
                     <div className="w-2 h-2 bg-primary-foreground rounded-full" />
                   )}
