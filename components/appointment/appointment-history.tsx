@@ -12,28 +12,30 @@ interface Appointment {
   status: string
   poli_service: { name: string } | null
   notes?: string
+  queue_status: string
 }
 
 export default function AppointmentHistory() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchAppointments() {
-      try {
-        const res = await fetch('/api/appointment')
-        const json = await res.json()
-        if (json.success && json.data.length > 0) {
-          // Filter history statuses
-          const historyStatuses = ['checked_in']
-          setAppointments(json.data.filter((a: Appointment) => historyStatuses.includes(a.status)))
-        }
-      } catch (err) {
-        console.error('Failed to fetch appointments:', err)
-      } finally {
-        setIsLoading(false)
+  async function fetchAppointments() {
+    try {
+      const res = await fetch('/api/appointment')
+      const json = await res.json()
+      if (json.success && json.data.length > 0) {
+        // Filter history statuses
+        const historyStatuses = ['checked_in']
+        setAppointments(json.data.filter((a: Appointment) => historyStatuses.includes(a.status) && a.queue_status === 'done'))
       }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err)
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchAppointments()
   }, [])
 

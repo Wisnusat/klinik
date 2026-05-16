@@ -12,25 +12,26 @@ interface Appointment {
   appointment_time: string
   status: string
   poli_service: { id: string, name: string, code: string } | null
-  queues?: { queue_number: string }[] | null
+  queue_status: string
+  queue_number?: string
 }
 
 function CurrentQueueDisplay({ poliCode }: { poliCode: string }) {
   const [currentQueue, setCurrentQueue] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchCurrentQueue() {
-      try {
-        const res = await fetch(`/api/queue/?service=${poliCode}`)
-        const json = await res.json()
-        if (json.success) {
-          setCurrentQueue(json.data.current)
-        }
-      } catch (err) {
-        console.error('Failed to fetch current queue:', err)
+  const fetchCurrentQueue = async () => {
+    try {
+      const res = await fetch(`/api/queue/?service=${poliCode}`)
+      const json = await res.json()
+      if (json.success) {
+        setCurrentQueue(json.data.current)
       }
+    } catch (err) {
+      console.error('Failed to fetch current queue:', err)
     }
+  }
 
+  useEffect(() => {
     fetchCurrentQueue()
     const interval = setInterval(fetchCurrentQueue, 10000)
     return () => clearInterval(interval)
@@ -57,22 +58,23 @@ export default function ActiveAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchAppointments() {
-      try {
-        const res = await fetch('/api/appointment')
-        const json = await res.json()
-        if (json.success && json.data.length > 0) {
-          // Filter active statuses
-          const activeStatuses = ['pending', 'booked', 'arrived']
-          setAppointments(json.data.filter((a: Appointment) => activeStatuses.includes(a.status)))
-        }
-      } catch (err) {
-        console.error('Failed to fetch appointments:', err)
-      } finally {
-        setIsLoading(false)
+  const fetchAppointments = async () => {
+    try {
+      const res = await fetch('/api/appointment')
+      const json = await res.json()
+      if (json.success && json.data.length > 0) {
+        // Filter active statuses
+        const activeStatuses = ['pending', 'booked', 'arrived', 'checked_in']
+        setAppointments(json.data.filter((a: Appointment) => activeStatuses.includes(a.status) && a.queue_status !== 'active'))
       }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err)
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchAppointments()
   }, [])
 
@@ -108,10 +110,8 @@ export default function ActiveAppointments() {
     <div className="space-y-6">
       {appointments.map((appointment) => {
         const isCheckedIn = appointment.status === 'arrived' || appointment.status === 'checked_in'
-        const queueNumber = appointment.queues && appointment.queues.length > 0 
-          ? appointment.queues[0].queue_number 
-          : null
-        
+        const queueNumber = appointment.queue_number
+
         return (
           <Card key={appointment.id} className="p-6 border border-border/40 hover:shadow-lg transition-all">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
