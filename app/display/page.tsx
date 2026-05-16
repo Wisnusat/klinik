@@ -16,16 +16,34 @@ type QueueData = {
 const QueueDisplay = () => {
   const searchParams = useSearchParams()
   const service = searchParams.get('s') || 'general'
-  
+
   const [queueData, setQueueData] = useState<QueueData>({
     current: null,
     next: null,
-    service: service === 'dental' ? 'Dental' : 'General',
+    service: '',
     totalWaiting: 0,
-    doctor: service === 'dental' ? 'Dr. Michael Chen' : 'Dr. Sarah Johnson'
+    doctor: ''
   })
 
   const [currentTime, setCurrentTime] = useState(new Date())
+
+  const fetchQueue = async () => {
+    try {
+      const res = await fetch(`/api/queue?service=${service}`)
+      const json = await res.json()
+      if (json.success) {
+        setQueueData({
+          current: json.data.current,
+          next: json.data.next,
+          service: json.data.service,
+          totalWaiting: json.data.totalWaiting || 0,
+          doctor: json.data.doctor
+        })
+      }
+    } catch (err) {
+      console.error('Failed to fetch queue data:', err)
+    }
+  }
 
   // Real-time clock
   useEffect(() => {
@@ -36,26 +54,7 @@ const QueueDisplay = () => {
     return () => clearInterval(timer)
   }, [])
 
-  // Fetch real queue data
   useEffect(() => {
-    const fetchQueue = async () => {
-      try {
-        const res = await fetch(`/api/queue?service=${service}`)
-        const json = await res.json()
-        if (json.success) {
-          setQueueData({
-            current: json.data.current,
-            next: json.data.next,
-            service: json.data.service || (service === 'dental' ? 'Dental' : 'General'),
-            totalWaiting: json.data.totalWaiting || 0,
-            doctor: json.data.doctor || (service === 'dental' ? 'Dr. Michael Chen' : 'Dr. Sarah Johnson')
-          })
-        }
-      } catch (err) {
-        console.error('Failed to fetch queue data:', err)
-      }
-    }
-
     // Initial fetch
     fetchQueue()
 
@@ -66,14 +65,14 @@ const QueueDisplay = () => {
   }, [service])
 
   const getServiceColor = () => {
-    return service === 'dental' 
-      ? 'text-blue-600 dark:text-blue-400' 
+    return service === 'dental'
+      ? 'text-blue-600 dark:text-blue-400'
       : 'text-emerald-600 dark:text-emerald-400'
   }
 
   const getServiceBgColor = () => {
-    return service === 'dental' 
-      ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800' 
+    return service === 'dental'
+      ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800'
       : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'
   }
 
@@ -113,7 +112,7 @@ const QueueDisplay = () => {
       <div className="flex-1 flex items-center justify-center p-4 lg:p-8">
         <div className="w-full max-w-4xl lg:max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
-            
+
             {/* Current Queue */}
             <Card className={`p-6 lg:p-12 ${getServiceBgColor()} border-2 lg:border-4`}>
               <div className="text-center">
@@ -121,13 +120,13 @@ const QueueDisplay = () => {
                   <Users className={getServiceColor()} size={32} />
                   <h2 className="text-lg lg:text-3xl font-semibold text-foreground">Sedang Dilayani</h2>
                 </div>
-                
+
                 <div className="my-6 lg:my-12">
                   <span className="text-5xl lg:text-8xl font-black font-mono text-foreground">
                     {queueData.current || '---'}
                   </span>
                 </div>
-                
+
                 <p className="text-xs lg:text-lg text-foreground/70">
                   {queueData.current ? 'Pasien dipanggil ke ruangan' : 'Belum ada pasien'}
                 </p>
@@ -141,13 +140,13 @@ const QueueDisplay = () => {
                   <Clock className="text-primary" size={32} />
                   <h2 className="text-lg lg:text-3xl font-semibold text-foreground">Berikutnya</h2>
                 </div>
-                
+
                 <div className="my-6 lg:my-12">
                   <span className="text-5xl lg:text-8xl font-black font-mono text-muted-foreground">
                     {queueData.next || '---'}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-center gap-2 lg:gap-3 text-xs lg:text-lg text-foreground/70">
                   <span>Siapkan diri Anda</span>
                 </div>
