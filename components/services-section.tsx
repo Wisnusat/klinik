@@ -14,80 +14,44 @@ import {
   Pill,
   Heart,
   Eye,
-  Sparkles
-  // Ambulance,
-  // Scalpel
+  Sparkles,
+  Scissors,
+  FlaskConical,
 } from 'lucide-react'
+import { DEFAULT_SERVICES, type ServicesContent, type ServiceItem } from '@/lib/cms'
 
-export default function ServicesSection() {
-  const services = [
-    {
-      id: 1,
-      icon: Stethoscope,
-      name: 'General Practitioner',
-      description: 'Comprehensive primary healthcare services for all ages',
-      hours: 'Mon–Fri: 08:00–17:00 | Sat: 09:00–13:00'
-    },
-    {
-      id: 2,
-      icon: Baby,
-      name: 'Pediatrics',
-      description: 'Specialized care for infants, children, and adolescents',
-      hours: 'Mon–Fri: 08:00–17:00 | Sat: 10:00–14:00'
-    },
-    {
-      id: 3,
-      icon: Sparkles,
-      name: 'Dental',
-      description: 'Complete dental care including cleanings and treatments',
-      hours: 'Mon–Fri: 09:00–18:00 | Tue, Thu: 09:00–20:00'
-    },
-    {
-      id: 4,
-      icon: Pill,
-      name: 'Internal Medicine',
-      description: 'Treatment of complex internal medical conditions',
-      hours: 'Mon–Fri: 08:00–17:00'
-    },
-    {
-      id: 5,
-      icon: Heart,
-      name: 'Cardiology',
-      description: 'Heart and cardiovascular system specialists',
-      hours: 'Mon, Wed, Fri: 10:00–16:00'
-    },
-    {
-      id: 6,
-      icon: Eye,
-      name: 'Eye Care',
-      description: 'Comprehensive eye examinations and treatments',
-      hours: 'Tue, Thu: 10:00–17:00 | Sat: 10:00–15:00'
-    },
-    // {
-    //   id: 7,
-    //   icon: Ambulance,
-    //   name: 'IGD (Emergency)',
-    //   description: '24/7 emergency and critical care services',
-    //   hours: 'Open 24 hours daily'
-    // },
-    // {
-    //   id: 8,
-    //   icon: Stethoscope,
-    //   name: 'Operations',
-    //   description: 'Advanced surgical procedures with modern facilities',
-    //   hours: 'Mon–Fri: 09:00–18:00'
-    // }
-  ]
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const SERVICE_ICONS: Record<string, any> = {
+  'Poli Obgyn': Baby,
+  'Poli Bedah': Scissors,
+  'Poli Gigi': Sparkles,
+  'Poli Umum': Stethoscope,
+  'Farmasi': Pill,
+  'Laboratorium': FlaskConical,
+  'Poli Mata': Eye,
+  'Poli Jantung': Heart,
+}
+
+interface ServicesSectionProps {
+  services?: any
+}
+
+export default function ServicesSection({ services }: ServicesSectionProps) {
+  const s: ServicesContent = {
+    ...DEFAULT_SERVICES,
+    ...services,
+    items: services?.items ?? DEFAULT_SERVICES.items,
+  }
 
   return (
     <section id="services" className="w-full py-20 md:py-32 bg-secondary/5">
       <div className="container mx-auto max-w-7xl px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
-            Medical Services
+            {s.title}
           </h2>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto text-balance">
-            Wide range of healthcare services provided by our experienced professionals
+            {s.subtitle}
           </p>
         </div>
 
@@ -96,11 +60,11 @@ export default function ServicesSection() {
           className="relative"
         >
           <CarouselContent>
-            {services.map((service) => {
-              const IconComponent = service.icon
+            {s.items.map((service: ServiceItem, index: number) => {
+              const IconComponent = SERVICE_ICONS[service.name] ?? Stethoscope
               return (
                 <CarouselItem
-                  key={service.id}
+                  key={index}
                   className="basis-full sm:basis-1/2 lg:basis-1/4"
                 >
                   <Card className="h-full p-8 border border-border/40 hover:shadow-lg hover:border-primary/20 transition-all duration-300 group cursor-pointer">
@@ -114,7 +78,7 @@ export default function ServicesSection() {
                       {service.description}
                     </p>
                     <div className="pt-4 border-t border-border/20">
-                      <p className="text-xs text-foreground/50 font-medium mb-2">Hours</p>
+                      <p className="text-xs text-foreground/50 font-medium mb-2">Jam Layanan</p>
                       <p className="text-xs text-foreground/70">
                         {service.hours}
                       </p>

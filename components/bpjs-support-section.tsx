@@ -1,8 +1,6 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { FileCheck2, ShieldCheck, Wallet } from 'lucide-react'
 import Image from 'next/image'
 
@@ -10,18 +8,18 @@ export default function BpjsSupportSection() {
   const points = [
     {
       icon: FileCheck2,
-      title: 'BPJS Accepted',
-      description: 'We support BPJS for eligible services with clear administrative guidance.'
+      title: 'BPJS Diterima',
+      description: 'Kami menerima BPJS untuk layanan yang memenuhi syarat dengan panduan administrasi yang jelas.'
     },
     {
       icon: Wallet,
-      title: 'Transparent Payment Options',
-      description: 'BPJS, self-pay, and additional services—explained upfront before treatment.'
+      title: 'Opsi Pembayaran Transparan',
+      description: 'BPJS, bayar mandiri, dan layanan tambahan — dijelaskan di awal sebelum perawatan.'
     },
     {
       icon: ShieldCheck,
-      title: 'Document & Referral Support',
-      description: 'Help with required documents, referrals, and verification (dummy flow for now).'
+      title: 'Bantuan Dokumen & Rujukan',
+      description: 'Bantuan untuk dokumen yang diperlukan, surat rujukan, dan verifikasi data.'
     }
   ]
 
@@ -32,24 +30,16 @@ export default function BpjsSupportSection() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                {/* <Badge>BPJS Support</Badge> */}
-                <Image src="/logo_bpjs.webp" alt="logo_bpjs" width={140} height={140} />
-                <span className="text-sm text-foreground/60">Trusted payment coverage</span>
+                <Image src="/logo_bpjs.webp" alt="Logo BPJS Kesehatan" width={140} height={140} />
+                <span className="text-sm text-foreground/60">Jaminan kesehatan terpercaya</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
-                BPJS Support for Your Visit
+                Dukungan BPJS untuk Kunjungan Anda
               </h2>
               <p className="text-foreground/60 max-w-2xl text-balance">
-                For eligible services, we accept BPJS and help you understand the required documents and process. This content is placeholder—replace with your clinic’s real BPJS flow.
+                Untuk layanan yang memenuhi syarat, kami menerima BPJS dan membantu Anda memahami dokumen serta proses yang diperlukan. Silakan bawa kartu BPJS, KTP, dan surat rujukan saat berkunjung.
               </p>
             </div>
-
-            {/* <div className="w-full lg:w-auto flex gap-3">
-              <Button className="bg-primary hover:bg-primary/90">Check Requirements</Button>
-              <Button variant="outline" className="border-primary/30 text-primary hover:bg-secondary">
-                Contact Admin
-              </Button>
-            </div> */}
           </div>
 
           <div className="mt-10 grid md:grid-cols-3 gap-6">
