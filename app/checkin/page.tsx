@@ -18,6 +18,7 @@ type AppointmentLookup = {
   time: string
   doctor: string
   location: string
+  patientName: string
 }
 
 function formatDate(dateString: string) {
@@ -195,7 +196,7 @@ export default function CheckinPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <User size={18} className="text-primary shrink-0" />
-                        <span className="text-foreground/70">{appointment.doctor}</span>
+                        <span className="text-foreground/70">{appointment.patientName}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <MapPin size={18} className="text-primary shrink-0" />
@@ -269,7 +270,7 @@ export default function CheckinPage() {
                         Halaman akan otomatis reset dalam <span className="font-semibold text-primary">10 detik</span> untuk pasien berikutnya.
                       </p>
                       <div className="mt-2 space-y-1 text-sm text-foreground/60">
-                        <p>1. Datang ke meja administrasi dan tunjukkan kode booking.</p>
+                        <p>1. Datang ke poli yang dituju.</p>
                         <p>2. Siapkan identitas (KTP) dan kartu BPJS (jika menggunakan BPJS).</p>
                         <p>3. Tunggu panggilan sesuai nomor antrian.</p>
                       </div>

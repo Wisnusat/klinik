@@ -12,28 +12,30 @@ interface Appointment {
   status: string
   poli_service: { name: string } | null
   notes?: string
+  queue_status: string
 }
 
 export default function AppointmentHistory() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchAppointments() {
-      try {
-        const res = await fetch('/api/appointment')
-        const json = await res.json()
-        if (json.success && json.data.length > 0) {
-          // Filter history statuses
-          const historyStatuses = ['completed', 'cancelled', 'no_show']
-          setAppointments(json.data.filter((a: Appointment) => historyStatuses.includes(a.status)))
-        }
-      } catch (err) {
-        console.error('Failed to fetch appointments:', err)
-      } finally {
-        setIsLoading(false)
+  async function fetchAppointments() {
+    try {
+      const res = await fetch('/api/appointment')
+      const json = await res.json()
+      if (json.success && json.data.length > 0) {
+        // Filter history statuses
+        const historyStatuses = ['checked_in']
+        setAppointments(json.data.filter((a: Appointment) => historyStatuses.includes(a.status) && a.queue_status === 'done'))
       }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err)
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchAppointments()
   }, [])
 
@@ -43,7 +45,7 @@ export default function AppointmentHistory() {
   }
 
   const getStatusIcon = (status: string) => {
-    return status === 'completed' ? (
+    return status === 'checked_in' ? (
       <CheckCircle size={20} className="text-primary" />
     ) : (
       <XCircle size={20} className="text-destructive" />
@@ -51,7 +53,7 @@ export default function AppointmentHistory() {
   }
 
   const getStatusStyles = (status: string) => {
-    if (status === 'completed') {
+    if (status === 'checked_in') {
       return 'bg-primary/10 text-primary'
     }
     return 'bg-destructive/10 text-destructive'
@@ -103,10 +105,6 @@ export default function AppointmentHistory() {
               <span className="text-sm text-foreground/70">
                 {appointment.appointment_time.substring(0, 5)}
               </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <User size={16} className="text-foreground/50 flex-shrink-0" />
-              <span className="text-sm text-foreground/70">Doctor Not Defined</span>
             </div>
           </div>
         </Card>

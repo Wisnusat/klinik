@@ -3,7 +3,12 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group"
 import {
   Select,
   SelectContent,
@@ -30,12 +35,12 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    
+
     if (!formData.name.trim()) newErrors.name = 'Name is required'
     if (!formData.email.trim()) newErrors.email = 'Email is required'
     if (!formData.phone.trim()) newErrors.phone = 'Phone is required'
     if (!formData.address.trim()) newErrors.address = 'Address is required'
-    if (!formData.bloodType) newErrors.bloodType = 'Blood type is required'
+    // if (!formData.bloodType) newErrors.bloodType = 'Blood type is required'
     if (!formData.gender) newErrors.gender = 'Gender is required'
     if (!formData.dob) newErrors.dob = 'Date of birth is required'
 
@@ -86,14 +91,15 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Phone Number *</label>
-          <Input
-            placeholder="+62 812 3456 7890"
-            value={formData.phone}
-            onChange={(e) => {
+          <InputGroup>
+            <InputGroupInput value={formData.phone} onChange={(e) => {
               setFormData({ ...formData, phone: e.target.value })
               if (errors.phone) setErrors({ ...errors, phone: '' })
-            }}
-          />
+            }} id="input-group-phone" placeholder="81234567890" />
+            <InputGroupAddon>
+              <InputGroupText>+62</InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
           {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
         </div>
 
@@ -132,7 +138,6 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
             <SelectContent>
               <SelectItem value="male">Male</SelectItem>
               <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
           {errors.gender && <p className="text-sm text-destructive">{errors.gender}</p>}

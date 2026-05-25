@@ -34,7 +34,7 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
     setIsChecking(true)
 
     try {
-      const res = await fetch('/api/patients/verify', {
+      const res = await fetch('/api/patient/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nik })

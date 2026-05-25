@@ -17,44 +17,41 @@ export default function RegistrationSection() {
         <div className="text-center space-y-8">
           <div className="space-y-4">
             <h2 className="text-5xl md:text-6xl font-bold text-foreground text-balance">
-              Register for Online Queue
+              Daftar Antrian Online
             </h2>
             <p className="text-lg md:text-xl text-foreground/70 text-balance max-w-3xl mx-auto">
-              Book your appointment easily and quickly. No more waiting in long lines. Our online registration system is fast, secure, and available 24/7.
+              Buat janji temu dengan mudah dan cepat. Tidak perlu lagi menunggu lama. Sistem pendaftaran online kami cepat, aman, dan tersedia 24/7.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 my-12">
             <div className="text-center flex flex-col items-center">
               <Zap className='h-10 w-10 mb-2' />
-              <h3 className="font-semibold text-foreground mb-2">Quick & Easy</h3>
-              <p className="text-foreground/60 text-sm">Complete registration in just 2 minutes</p>
+              <h3 className="font-semibold text-foreground mb-2">Cepat &amp; Mudah</h3>
+              <p className="text-foreground/60 text-sm">Selesaikan pendaftaran hanya dalam 2 menit</p>
             </div>
             <div className="text-center flex flex-col items-center">
               <ShieldCheck className='h-10 w-10 mb-2' />
-              <h3 className="font-semibold text-foreground mb-2">Secure</h3>
-              <p className="text-foreground/60 text-sm">Your data is protected with encryption</p>
+              <h3 className="font-semibold text-foreground mb-2">Aman</h3>
+              <p className="text-foreground/60 text-sm">Data Anda dilindungi dengan enkripsi</p>
             </div>
             <div className="text-center flex flex-col items-center">
               <Clock3 className='h-10 w-10 mb-2' />
-              <h3 className="font-semibold text-foreground mb-2">Always Open</h3>
-              <p className="text-foreground/60 text-sm">Register anytime from anywhere</p>
+              <h3 className="font-semibold text-foreground mb-2">Selalu Buka</h3>
+              <p className="text-foreground/60 text-sm">Daftar kapan saja dari mana saja</p>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
             <Link href="/appointment">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-10">
-                Book Appointment
+                Buat Janji
               </Button>
             </Link>
-            {/* <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-secondary">
-              Learn More
-            </Button> */}
           </div>
 
           <p className="text-sm text-foreground/50 pt-4">
-            Already registered? <a href="/appointment" className="text-primary hover:underline font-semibold">Check your appointment status</a>
+            Sudah terdaftar? <a href="/appointment" className="text-primary hover:underline font-semibold">Cek status janji temu Anda</a>
           </p>
         </div>
       </div>

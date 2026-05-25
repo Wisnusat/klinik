@@ -3,8 +3,23 @@
 import { Button } from '@/components/ui/button'
 import { handleNavClick } from '@/lib/helpers'
 import Image from 'next/image'
+import {
+  DEFAULT_HERO,
+  DEFAULT_STATS,
+  type HeroContent,
+  type StatItem,
+} from '@/lib/cms'
 
-export default function HeroSection() {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface HeroSectionProps {
+  hero?: any
+  stats?: any
+}
+
+export default function HeroSection({ hero, stats }: HeroSectionProps) {
+  const h: HeroContent = { ...DEFAULT_HERO, ...hero }
+  const s: StatItem[] = stats?.items ?? DEFAULT_STATS
+
   return (
     <section className="relative w-full py-20 md:py-32 overflow-hidden bg-gradient-to-br from-background via-background to-secondary/20">
       {/* Decorative background elements */}
@@ -18,10 +33,10 @@ export default function HeroSection() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl md:text-6xl font-bold text-foreground text-balance leading-tight">
-                Your Trusted Healthcare Partner
+                {h.title}
               </h1>
               <p className="text-xl text-foreground/70 text-balance">
-                Experience quality care delivered by our professional medical team in modern, comfortable facilities
+                {h.subtitle}
               </p>
             </div>
 
@@ -31,7 +46,7 @@ export default function HeroSection() {
                 onClick={handleNavClick}
               >
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Register Online
+                  {h.cta_primary_text}
                 </Button>
               </a>
               <a
@@ -39,24 +54,18 @@ export default function HeroSection() {
                 onClick={handleNavClick}
               >
                 <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-secondary">
-                  View Services
+                  {h.cta_secondary_text}
                 </Button>
               </a>
             </div>
 
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border/20">
-              <div>
-                <div className="text-3xl font-bold text-primary">15+</div>
-                <p className="text-sm text-foreground/60">Years Experience</p>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary">50+</div>
-                <p className="text-sm text-foreground/60">Medical Staff</p>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary">10K+</div>
-                <p className="text-sm text-foreground/60">Happy Patients</p>
-              </div>
+              {s.map((stat, i) => (
+                <div key={i}>
+                  <div className="text-3xl font-bold text-primary">{stat.value}</div>
+                  <p className="text-sm text-foreground/60">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -64,7 +73,7 @@ export default function HeroSection() {
           <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg md:flex hidden">
             <Image
               src="/hero-clinic.jpg"
-              alt="Modern medical clinic reception area with professional healthcare team"
+              alt="Klinik Utama Harapan Bunda - Fasilitas Kesehatan Modern"
               fill
               className="object-cover"
               priority

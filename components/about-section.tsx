@@ -9,30 +9,26 @@ import {
   Activity,
   ShieldCheck
 } from 'lucide-react'
+import { DEFAULT_ABOUT, type AboutContent } from '@/lib/cms'
 
-export default function AboutSection() {
-  const highlights = [
-    {
-      icon: Ambulance,
-      title: '24/7 Emergency (IGD)',
-      description: 'Round-the-clock triage, stabilization, and critical response with on-call teams.'
-    },
-    {
-      icon: Activity,
-      title: 'Operating Room Ready',
-      description: 'Sterile OR setup for urgent and scheduled procedures with perioperative support.'
-    },
-    {
-      icon: HeartPulse,
-      title: 'Comprehensive Monitoring',
-      description: 'Continuous vitals monitoring and post-treatment observation for safer recovery.'
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Patient Safety First',
-      description: 'Standardized protocols, infection prevention, and quality assurance workflows.'
-    }
-  ]
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const ICON_MAP: Record<string, any> = {
+  'Pelayanan 24 Jam': Ambulance,
+  'Dokter Spesialis': Activity,
+  'Pemantauan Lengkap': HeartPulse,
+  'Keselamatan Pasien': ShieldCheck,
+}
+
+interface AboutSectionProps {
+  about?: any
+}
+
+export default function AboutSection({ about }: AboutSectionProps) {
+  const a: AboutContent = {
+    ...DEFAULT_ABOUT,
+    ...about,
+    highlights: about?.highlights ?? DEFAULT_ABOUT.highlights,
+  }
 
   return (
     <section id="about" className="w-full py-20 md:py-32 bg-background">
@@ -41,7 +37,7 @@ export default function AboutSection() {
           <div className="relative h-80 sm:h-[420px] lg:h-[520px] rounded-2xl overflow-hidden shadow-lg border border-border/40">
             <Image
               src="/hero-clinic.jpg"
-              alt="Type A healthcare clinic with 24/7 emergency services and operating room"
+              alt="Klinik Utama Harapan Bunda"
               fill
               className="object-cover"
             />
@@ -49,10 +45,10 @@ export default function AboutSection() {
             <div className="absolute left-6 bottom-6 right-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/80 backdrop-blur px-4 py-2">
                 <Hospital className="text-primary" size={18} strokeWidth={1.8} />
-                <span className="text-sm font-semibold text-foreground">Type A Healthcare</span>
+                <span className="text-sm font-semibold text-foreground">Klinik Utama</span>
                 <span className="text-sm text-foreground/60">•</span>
                 <Clock className="text-primary" size={18} strokeWidth={1.8} />
-                <span className="text-sm font-semibold text-foreground">24 Hours</span>
+                <span className="text-sm font-semibold text-foreground">24 Jam</span>
               </div>
             </div>
           </div>
@@ -60,19 +56,19 @@ export default function AboutSection() {
           <div>
             <div className="space-y-4 mb-10">
               <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance">
-                About Our Klinik
+                {a.title}
               </h2>
               <p className="text-lg text-foreground/70 text-balance">
-                We’re a Type A healthcare clinic designed for fast, safe, and complete care—supported by a 24/7 Emergency Unit (IGD) and an operating room for urgent and scheduled procedures.
+                {a.description}
               </p>
               <p className="text-foreground/60 text-balance">
-                From first assessment to treatment and observation, our workflow is built around patient safety, timely decisions, and clear communication.
+                {a.sub_description}
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {highlights.map((item, index) => {
-                const IconComponent = item.icon
+              {a.highlights.map((item, index) => {
+                const IconComponent = ICON_MAP[item.title] ?? Activity
                 return (
                   <div
                     key={index}
