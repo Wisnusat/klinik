@@ -137,3 +137,73 @@ export const DEFAULT_CONTACT: ContactContent = {
     email: '',
     emergency_text: 'Layanan Darurat Tersedia 24 Jam',
 }
+
+export interface GalleryItem {
+    id: string
+    url: string
+    title: string
+    is_active: boolean
+}
+
+export interface GalleryContent {
+    items: GalleryItem[]
+}
+
+export const DEFAULT_GALLERY: GalleryContent = {
+    items: [
+        {
+            id: 'gallery-1',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/depan.jpeg',
+            title: 'Tampak Depan Klinik',
+            is_active: true,
+        },
+        {
+            id: 'gallery-2',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/lobby%20depan.jpeg',
+            title: 'Lobby Utama & Resepsionis',
+            is_active: true,
+        },
+        {
+            id: 'gallery-3',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/IGD.jpeg',
+            title: 'Instalasi Gawat Darurat (IGD)',
+            is_active: true,
+        },
+        {
+            id: 'gallery-4',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/ruang%20tunggu%20depan.jpeg',
+            title: 'Ruang Tunggu Utama',
+            is_active: true,
+        },
+        {
+            id: 'gallery-5',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/ruang%20tunggu%20poli.jpeg',
+            title: 'Ruang Tunggu Poliklinik',
+            is_active: true,
+        },
+        {
+            id: 'gallery-6',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/kamar%20operasi.jpeg',
+            title: 'Kamar Operasi Utama',
+            is_active: true,
+        },
+        {
+            id: 'gallery-7',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/kamar%20operasi%202.jpeg',
+            title: 'Kamar Operasi Medis',
+            is_active: true,
+        },
+        {
+            id: 'gallery-8',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/ruang%20gigi.jpeg',
+            title: 'Poliklinik Gigi & Mulut',
+            is_active: true,
+        },
+        {
+            id: 'gallery-9',
+            url: 'https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/ruang%20obat.jpeg',
+            title: 'Ruang Farmasi & Pengambilan Obat',
+            is_active: true,
+        },
+    ],
+}
