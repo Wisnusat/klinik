@@ -89,9 +89,9 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    if (!selectedService) newErrors.service = 'Service is required'
-    if (!selectedDate) newErrors.date = 'Date is required'
-    if (!selectedTime) newErrors.time = 'Time is required'
+    if (!selectedService) newErrors.service = 'Layanan spesialis wajib dipilih'
+    if (!selectedDate) newErrors.date = 'Tanggal kunjungan wajib dipilih'
+    if (!selectedTime) newErrors.time = 'Jadwal jam wajib dipilih'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -110,19 +110,19 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Select Service & Date</h2>
-        <p className="text-foreground/60">Choose your preferred service and appointment schedule</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Pilih Layanan & Tanggal</h2>
+        <p className="text-foreground/60">Pilih layanan poli spesialis dan jadwal janji temu Anda</p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Service *</label>
+          <label className="text-sm font-medium text-foreground">Layanan Spesialis / Poli *</label>
           <Select value={selectedService} onValueChange={(value) => {
             setSelectedService(value)
             if (errors.service) setErrors({ ...errors, service: '' })
           }} disabled={isLoading}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={isLoading ? "Loading services..." : "Select a service"} />
+              <SelectValue placeholder={isLoading ? "Memuat layanan..." : "Pilih layanan"} />
             </SelectTrigger>
             <SelectContent>
               {services.map((service) => (
@@ -136,7 +136,7 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Preferred Date *</label>
+          <label className="text-sm font-medium text-foreground">Tanggal Kunjungan *</label>
           <div className="relative">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary pointer-events-none" />
             <Input
@@ -154,14 +154,14 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Time Slot *</label>
+          <label className="text-sm font-medium text-foreground">Pilih Jadwal Jam *</label>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {isSlotsLoading ? (
-              <p className="text-sm text-foreground/60 col-span-full">Loading available slots...</p>
+              <p className="text-sm text-foreground/60 col-span-full">Memuat jadwal dokter...</p>
             ) : !selectedService ? (
-              <p className="text-sm text-foreground/60 col-span-full">Please select a service first.</p>
+              <p className="text-sm text-foreground/60 col-span-full">Silakan pilih layanan spesialis terlebih dahulu.</p>
             ) : slots.length === 0 ? (
-              <p className="text-sm text-foreground/60 col-span-full">No slots available for this service.</p>
+              <p className="text-sm text-foreground/60 col-span-full">Jadwal untuk layanan ini tidak tersedia hari ini.</p>
             ) : (
               slots.map((slot) => {
                 const formattedTime = `${slot.start_time?.slice(0, 5) || '??:??'} - ${slot.end_time?.slice(0, 5) || '??:??'}`
@@ -192,20 +192,20 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
 
       <div className="border-t border-border/40 pt-6">
         <div className="space-y-2 mb-6">
-          <h3 className="font-semibold text-foreground">Appointment Summary</h3>
+          <h3 className="font-semibold text-foreground">Ringkasan Janji Temu</h3>
           <div className="bg-secondary/30 p-4 rounded-lg space-y-2">
             <div className="flex justify-between">
-              <span className="text-foreground/60">Service:</span>
+              <span className="text-foreground/60">Poli/Layanan:</span>
               <span className="font-medium text-foreground">
                 {selectedService ? services.find(s => s.id === selectedService)?.name : '-'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-foreground/60">Date:</span>
+              <span className="text-foreground/60">Tanggal:</span>
               <span className="font-medium text-foreground">{selectedDate || '-'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-foreground/60">Time:</span>
+              <span className="text-foreground/60">Waktu:</span>
               <span className="font-medium text-foreground">{selectedTime || '-'}</span>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function ServiceDateSelection({ onSubmit }: ServiceDateSelectionP
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
         disabled={isLoading}
       >
-        Continue to Payment
+        Lanjutkan ke Pembayaran
       </Button>
     </div>
   )

@@ -18,15 +18,15 @@ export default function AppointmentPage() {
       <div className="flex-1">
         <div className="container mx-auto max-w-6xl px-4 py-12">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">Appointments</h1>
-            <p className="text-foreground/60">Book your appointment or view your appointment history</p>
+            <h1 className="text-4xl font-bold text-foreground mb-2">Janji Temu</h1>
+            <p className="text-foreground/60">Daftar janji temu baru atau lihat riwayat kunjungan Anda</p>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="book">Book</TabsTrigger>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="book">Daftar</TabsTrigger>
+              <TabsTrigger value="active">Aktif</TabsTrigger>
+              <TabsTrigger value="history">Riwayat</TabsTrigger>
             </TabsList>
 
             <TabsContent value="book" className="space-y-4">

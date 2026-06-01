@@ -72,7 +72,7 @@ export default function HeroSection({ hero, stats }: HeroSectionProps) {
           {/* Hero image */}
           <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg md:flex hidden">
             <Image
-              src="/hero-clinic.jpg"
+              src="https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/depan.jpeg"
               alt="Klinik Utama Harapan Bunda - Fasilitas Kesehatan Modern"
               fill
               className="object-cover"

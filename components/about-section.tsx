@@ -36,7 +36,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="relative h-80 sm:h-[420px] lg:h-[520px] rounded-2xl overflow-hidden shadow-lg border border-border/40">
             <Image
-              src="/hero-clinic.jpg"
+              src="https://ljmjkepiemhzqztmwqph.supabase.co/storage/v1/object/public/assets/depan.jpeg"
               alt="Klinik Utama Harapan Bunda"
               fill
               className="object-cover"

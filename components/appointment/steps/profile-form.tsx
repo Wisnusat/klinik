@@ -36,13 +36,13 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.name.trim()) newErrors.name = 'Name is required'
-    if (!formData.email.trim()) newErrors.email = 'Email is required'
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required'
-    if (!formData.address.trim()) newErrors.address = 'Address is required'
+    if (!formData.name.trim()) newErrors.name = 'Nama lengkap wajib diisi'
+    if (!formData.email.trim()) newErrors.email = 'Email wajib diisi'
+    if (!formData.phone.trim()) newErrors.phone = 'Nomor telepon wajib diisi'
+    if (!formData.address.trim()) newErrors.address = 'Alamat wajib diisi'
     // if (!formData.bloodType) newErrors.bloodType = 'Blood type is required'
-    if (!formData.gender) newErrors.gender = 'Gender is required'
-    if (!formData.dob) newErrors.dob = 'Date of birth is required'
+    if (!formData.gender) newErrors.gender = 'Jenis kelamin wajib diisi'
+    if (!formData.dob) newErrors.dob = 'Tanggal lahir wajib diisi'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -57,13 +57,13 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Complete Your Profile</h2>
-        <p className="text-foreground/60">We're new to you! Please provide some additional information</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Lengkapi Profil Anda</h2>
+        <p className="text-foreground/60">NIK Anda belum terdaftar. Silakan lengkapi informasi profil terlebih dahulu.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Full Name *</label>
+          <label className="text-sm font-medium text-foreground">Nama Lengkap *</label>
           <Input
             placeholder="John Doe"
             value={formData.name}
@@ -90,7 +90,7 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Phone Number *</label>
+          <label className="text-sm font-medium text-foreground">Nomor Telepon *</label>
           <InputGroup>
             <InputGroupInput value={formData.phone} onChange={(e) => {
               setFormData({ ...formData, phone: e.target.value })
@@ -104,13 +104,13 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Blood Type *</label>
+          <label className="text-sm font-medium text-foreground">Golongan Darah *</label>
           <Select value={formData.bloodType} onValueChange={(value) => {
             setFormData({ ...formData, bloodType: value })
             if (errors.bloodType) setErrors({ ...errors, bloodType: '' })
           }}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select blood type" />
+              <SelectValue placeholder="Pilih golongan darah" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="O+">O+</SelectItem>
@@ -127,24 +127,24 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Gender *</label>
+          <label className="text-sm font-medium text-foreground">Jenis Kelamin *</label>
           <Select value={formData.gender} onValueChange={(value) => {
             setFormData({ ...formData, gender: value })
             if (errors.gender) setErrors({ ...errors, gender: '' })
           }}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select gender" />
+              <SelectValue placeholder="Pilih jenis kelamin" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
+              <SelectItem value="male">Laki-laki</SelectItem>
+              <SelectItem value="female">Perempuan</SelectItem>
             </SelectContent>
           </Select>
           {errors.gender && <p className="text-sm text-destructive">{errors.gender}</p>}
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Date of Birth *</label>
+          <label className="text-sm font-medium text-foreground">Tanggal Lahir *</label>
           <Input
             type="date"
             value={formData.dob}
@@ -159,9 +159,9 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-foreground">Address *</label>
+        <label className="text-sm font-medium text-foreground">Alamat Lengkap *</label>
         <textarea
-          placeholder="123 Main Street, City, State 12345"
+          placeholder="Tuliskan alamat lengkap Anda saat ini"
           value={formData.address}
           onChange={(e) => {
             setFormData({ ...formData, address: e.target.value })
@@ -176,7 +176,7 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
         onClick={handleSubmit}
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
       >
-        Continue to Services
+        Lanjutkan ke Pilihan Layanan
       </Button>
     </div>
   )

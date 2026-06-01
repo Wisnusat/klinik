@@ -1,6 +1,7 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
+import { getStatusLabel } from '@/lib/helpers'
 import { Calendar, Clock, User, CheckCircle, XCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
@@ -41,7 +42,7 @@ export default function AppointmentHistory() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString + 'T00:00:00')
-    return date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+    return date.toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
   }
 
   const getStatusIcon = (status: string) => {
@@ -62,7 +63,7 @@ export default function AppointmentHistory() {
   if (isLoading) {
     return (
       <Card className="p-12 text-center border border-border/40">
-        <p className="text-foreground/60">Loading appointment history...</p>
+        <p className="text-foreground/60">Memuat riwayat janji temu...</p>
       </Card>
     )
   }
@@ -70,8 +71,8 @@ export default function AppointmentHistory() {
   if (appointments.length === 0) {
     return (
       <Card className="p-12 text-center border border-border/40">
-        <h3 className="text-lg font-semibold text-foreground mb-2">No Appointment History</h3>
-        <p className="text-foreground/60">You haven't had any completed or cancelled appointments yet</p>
+        <h3 className="text-lg font-semibold text-foreground mb-2">Tidak Ada Riwayat Janji Temu</h3>
+        <p className="text-foreground/60">Anda belum memiliki riwayat janji temu yang selesai atau dibatalkan</p>
       </Card>
     )
   }
@@ -85,11 +86,11 @@ export default function AppointmentHistory() {
               <div className="flex items-center gap-3 mb-2">
                 {getStatusIcon(appointment.status)}
                 <h3 className="text-lg font-bold text-foreground">
-                  {appointment.poli_service?.name || 'General Service'}
+                  {appointment.poli_service?.name || 'Layanan Umum'}
                 </h3>
               </div>
-              <span className={`inline-block px-3 py-1 ${getStatusStyles(appointment.status)} text-xs font-semibold rounded-full capitalize`}>
-                {appointment.status.replace('_', ' ')}
+              <span className={`inline-block px-3 py-1 ${getStatusStyles(appointment.status)} text-xs font-semibold rounded-full`}>
+                {getStatusLabel(appointment.status)}
               </span>
             </div>
             <p className="text-sm text-foreground/50 font-mono">{appointment.booking_code}</p>

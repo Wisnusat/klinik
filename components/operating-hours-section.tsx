@@ -2,13 +2,13 @@
 
 export default function OperatingHoursSection() {
   const schedule = [
-    { day: 'Monday', hours: '08:00 – 17:00' },
-    { day: 'Tuesday', hours: '08:00 – 17:00' },
-    { day: 'Wednesday', hours: '08:00 – 17:00' },
-    { day: 'Thursday', hours: '08:00 – 17:00' },
-    { day: 'Friday', hours: '08:00 – 17:00' },
-    { day: 'Saturday', hours: '09:00 – 14:00' },
-    { day: 'Sunday', hours: 'Emergency Only' }
+    { day: 'Senin', hours: '08:00 – 17:00' },
+    { day: 'Selasa', hours: '08:00 – 17:00' },
+    { day: 'Rabu', hours: '08:00 – 17:00' },
+    { day: 'Kamis', hours: '08:00 – 17:00' },
+    { day: 'Jumat', hours: '08:00 – 17:00' },
+    { day: 'Sabtu', hours: '09:00 – 14:00' },
+    { day: 'Minggu', hours: 'Hanya Gawat Darurat' }
   ]
 
   return (
@@ -17,10 +17,10 @@ export default function OperatingHoursSection() {
         <div className="grid md:grid-cols-2 gap-12 items-start">
           <div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
-              Operating Hours
+              Jam Operasional
             </h2>
             <p className="text-lg text-foreground/60 mb-8 text-balance">
-              Plan your visit with our convenient clinic hours. We're here when you need us.
+              Atur kunjungan Anda sesuai dengan jam operasional kami. Kami siap melayani kebutuhan medis Anda.
             </p>
 
             <div className="space-y-3">
@@ -35,27 +35,27 @@ export default function OperatingHoursSection() {
               ))}
             </div>
 
-            <div className="mt-10 p-6 rounded-xl bg-accent/10 border border-accent/20">
+            {/* <div className="mt-10 p-6 rounded-xl bg-accent/10 border border-accent/20">
               <h3 className="font-bold text-foreground mb-2 flex items-center gap-2">
-                <span className="text-xl">🚨</span> Emergency Contact
+                <span className="text-xl">🚨</span> Kontak Darurat
               </h3>
               <p className="text-foreground/70 mb-2">
-                Available 24/7 for urgent medical needs
+                Tersedia 24 jam untuk kebutuhan medis mendesak
               </p>
-              <a href="tel:+1234567890" className="text-primary font-semibold text-lg hover:underline">
-                +1 (234) 567-890
+              <a href="tel:+6281234567890" className="text-primary font-semibold text-lg hover:underline">
+                +62 812-3456-7890
               </a>
-            </div>
+            </div> */}
           </div>
 
-          <div className="h-96 rounded-2xl overflow-hidden shadow-lg border border-border/40">
+          {/* <div className="h-96 rounded-2xl overflow-hidden shadow-lg border border-border/40">
             <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-7xl mb-4">⏰</div>
-                <p className="text-foreground/50 text-lg">Open Hours Calendar</p>
+                <p className="text-foreground/50 text-lg">Kalender Jam Operasional</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -44,11 +44,11 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
           body: JSON.stringify(formData)
         })
         const patientJson = await patientRes.json()
-        
+
         if (patientJson.success && patientJson.data?.id) {
           finalPatientId = patientJson.data.id
         } else {
-          setError(patientJson.error || 'Failed to register patient profile')
+          setError(patientJson.error || 'Gagal mendaftarkan profil pasien')
           setIsSubmitting(false)
           return
         }
@@ -67,11 +67,11 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
       if (json.success) {
         onSubmit(json.data.booking_code)
       } else {
-        setError(json.error || 'Failed to create appointment')
+        setError(json.error || 'Gagal membuat janji temu')
       }
     } catch (err) {
       console.error('Failed to submit appointment:', err)
-      setError('An error occurred while communicating with the server')
+      setError('Terjadi kesalahan saat menghubungi server')
     } finally {
       setIsSubmitting(false)
     }
@@ -79,14 +79,14 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString + 'T00:00:00')
-    return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    return date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Confirm Your Appointment</h2>
-        <p className="text-foreground/60">Please review your appointment details before confirming</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Konfirmasi Janji Temu Anda</h2>
+        <p className="text-foreground/60">Silakan periksa kembali detail janji temu Anda sebelum melakukan konfirmasi</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -94,21 +94,17 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
         <Card className="p-6 border border-border/40">
           <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-            Patient Information
+            Informasi Pasien
           </h3>
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-foreground/50 uppercase tracking-wider">Name</p>
+              <p className="text-xs text-foreground/50 uppercase tracking-wider">Nama</p>
               <p className="text-foreground font-medium">{formData.name}</p>
             </div>
             <div>
               <p className="text-xs text-foreground/50 uppercase tracking-wider">NIK</p>
               <p className="text-foreground font-medium">{formData.nik}</p>
             </div>
-            {/* <div>
-              <p className="text-xs text-foreground/50 uppercase tracking-wider">Phone</p>
-              <p className="text-foreground font-medium">{formData.phone}</p>
-            </div> */}
           </div>
         </Card>
 
@@ -116,19 +112,19 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
         <Card className="p-6 border border-border/40">
           <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-            Appointment Details
+            Detail Janji Temu
           </h3>
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-foreground/50 uppercase tracking-wider">Service</p>
+              <p className="text-xs text-foreground/50 uppercase tracking-wider">Layanan/Poli</p>
               <p className="text-foreground font-medium">{formData.serviceName}</p>
             </div>
             <div>
-              <p className="text-xs text-foreground/50 uppercase tracking-wider">Date</p>
+              <p className="text-xs text-foreground/50 uppercase tracking-wider">Tanggal</p>
               <p className="text-foreground font-medium">{formatDate(formData.date)}</p>
             </div>
             <div>
-              <p className="text-xs text-foreground/50 uppercase tracking-wider">Time</p>
+              <p className="text-xs text-foreground/50 uppercase tracking-wider">Waktu</p>
               <p className="text-foreground font-medium">{formData.time}</p>
             </div>
           </div>
@@ -138,18 +134,18 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
         <Card className="p-6 border border-border/40">
           <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-            Payment Method
+            Metode Pembayaran
           </h3>
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-foreground/50 uppercase tracking-wider">Method</p>
+              <p className="text-xs text-foreground/50 uppercase tracking-wider">Metode</p>
               <p className="text-foreground font-medium capitalize">
-                {formData.paymentMethod === 'bpjs' ? 'BPJS Health' : 'Mandiri'}
+                {formData.paymentMethod === 'bpjs' ? 'BPJS Kesehatan' : 'Umum (Mandiri)'}
               </p>
             </div>
             {formData.paymentMethod === 'bpjs' && (
               <div>
-                <p className="text-xs text-foreground/50 uppercase tracking-wider">BPJS Number</p>
+                <p className="text-xs text-foreground/50 uppercase tracking-wider">Nomor BPJS</p>
                 <p className="text-foreground font-medium">{formData.bpjsNumber}</p>
               </div>
             )}
@@ -160,20 +156,18 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
         <Card className="p-6 border border-border/40 bg-secondary/20">
           <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-            Important Notes
+            Catatan Penting
           </h3>
           <ul className="space-y-2 text-sm text-foreground/70">
-            <li>• Please arrive 10 minutes before your appointment</li>
-            <li>• Bring valid ID and health insurance card</li>
-            <li>• For cancellations, notify us at least 24 hours ahead</li>
-            <li>• You will receive a confirmation via email and SMS</li>
+            <li>• Harap datang 10 menit sebelum waktu janji temu Anda</li>
+            <li>• Bawa kartu identitas (KTP) dan kartu asuransi/BPJS yang valid</li>
           </ul>
         </Card>
       </div>
 
       <Card className="p-4 border border-primary/30 bg-primary/5">
         <p className="text-sm text-foreground/70">
-          By clicking confirm, you agree to our appointment terms and conditions. Your information will be kept confidential.
+          Dengan menekan tombol konfirmasi, Anda menyetujui syarat dan ketentuan pendaftaran di klinik kami. Data Anda akan dijaga kerahasiaannya.
         </p>
       </Card>
 
@@ -185,7 +179,7 @@ export default function BookingConfirmation({ formData, onSubmit }: BookingConfi
           disabled={isSubmitting}
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-4"
         >
-          {isSubmitting ? 'Confirming...' : 'Confirm Appointment'}
+          {isSubmitting ? 'Mengonfirmasi...' : 'Konfirmasi Janji Temu'}
         </Button>
       </div>
     </div>

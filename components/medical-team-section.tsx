@@ -11,30 +11,30 @@ export default function MedicalTeamSection() {
     {
       id: 1,
       name: 'dr. Andi Pratama, Sp.PD',
-      specialty: 'Internal Medicine',
-      schedule: 'Mon–Fri: 10:00–16:00',
-      tags: ['BPJS', 'Adult Care', 'Chronic Care']
+      specialty: 'Spesialis Penyakit Dalam',
+      schedule: 'Senin–Jumat: 10:00–16:00',
+      tags: ['BPJS', 'Layanan Dewasa', 'Penyakit Kronis']
     },
     {
       id: 2,
       name: 'dr. Sinta Maharani, Sp.A',
-      specialty: 'Pediatrics',
-      schedule: 'Mon–Sat: 09:00–14:00',
-      tags: ['BPJS', 'Kids & Teen', 'Immunization']
+      specialty: 'Spesialis Anak',
+      schedule: 'Senin–Sabtu: 09:00–14:00',
+      tags: ['BPJS', 'Anak & Remaja', 'Imunisasi']
     },
     {
       id: 3,
       name: 'drg. Bima Nugraha',
-      specialty: 'Dental',
-      schedule: 'Tue & Thu: 09:00–20:00',
-      tags: ['Dental', 'Scaling', 'Restoration']
+      specialty: 'Kedokteran Gigi',
+      schedule: 'Selasa & Kamis: 09:00–20:00',
+      tags: ['Gigi', 'Pembersihan Karang', 'Tambal Gigi']
     },
     {
       id: 4,
       name: 'dr. Nadia Kusuma, Sp.B',
-      specialty: 'General Surgery',
-      schedule: 'By appointment (OR ready)',
-      tags: ['Operating Room', 'Minor Surgery', 'Emergency On-call']
+      specialty: 'Spesialis Bedah',
+      schedule: 'Dengan Perjanjian (Siap OK)',
+      tags: ['Kamar Operasi', 'Bedah Minor', 'Darurat On-Call']
     }
   ]
 
@@ -43,10 +43,10 @@ export default function MedicalTeamSection() {
       <div className="container mx-auto max-w-7xl px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
-            Doctors & Medical Team
+            Dokter & Tim Medis
           </h2>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto text-balance">
-            A professional team ready to support emergency care, operating room procedures, and daily outpatient services.
+            Tim dokter spesialis yang siap melayani rawat jalan, tindakan bedah, dan penanganan gawat darurat.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default function MedicalTeamSection() {
                       .join('')}
                   </AvatarFallback>
                 </Avatar>
-
+ 
                 <div className="min-w-0">
                   <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
                     {doctor.name}
@@ -96,7 +96,7 @@ export default function MedicalTeamSection() {
                   variant="outline"
                   className="w-full border-primary/30 text-primary hover:bg-secondary"
                 >
-                  View Schedule
+                  Lihat Jadwal
                 </Button>
               </div>
             </Card>

@@ -6,6 +6,7 @@ import HeroSection from '@/components/hero-section'
 import AboutSection from '@/components/about-section'
 import ServicesSection from '@/components/services-section'
 import BpjsSupportSection from '@/components/bpjs-support-section'
+import GallerySection from '@/components/gallery-section'
 import FaqSection from '@/components/faq-section'
 import RegistrationSection from '@/components/registration-section'
 import Footer from '@/components/footer'
@@ -26,6 +27,7 @@ export default function Home() {
       <AboutSection about={cms.about} />
       <ServicesSection services={cms.services} />
       <BpjsSupportSection />
+      <GallerySection gallery={cms.gallery} />
       <RegistrationSection />
       <FaqSection faq={cms.faq} />
       <Footer contact={cms.contact} services={cms.services} />
