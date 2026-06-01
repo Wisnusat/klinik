@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar, Clock, User, MapPin, Copy, Check, ListOrdered, Ticket } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { getStatusLabel } from '@/lib/helpers'
 
 interface Appointment {
   id: string
@@ -47,7 +48,7 @@ function CurrentQueueDisplay({ poliCode }: { poliCode: string }) {
         )}
       </p>
       <p className="text-xs text-foreground/50 mt-1">
-        {currentQueue ? 'Now serving' : 'Please wait closely'}
+        {currentQueue ? 'Sedang dilayani' : 'Mohon menunggu giliran'}
       </p>
     </>
   )
@@ -86,13 +87,13 @@ export default function ActiveAppointments() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString + 'T00:00:00')
-    return date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+    return date.toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
   }
 
   if (isLoading) {
     return (
       <Card className="p-12 text-center border border-border/40">
-        <p className="text-foreground/60">Loading appointments...</p>
+        <p className="text-foreground/60">Memuat janji temu...</p>
       </Card>
     )
   }
@@ -100,8 +101,8 @@ export default function ActiveAppointments() {
   if (appointments.length === 0) {
     return (
       <Card className="p-12 text-center border border-border/40">
-        <h3 className="text-lg font-semibold text-foreground mb-2">No Active Appointments</h3>
-        <p className="text-foreground/60 mb-6">You don't have any active appointments right now.</p>
+        <h3 className="text-lg font-semibold text-foreground mb-2">Tidak Ada Janji Temu Aktif</h3>
+        <p className="text-foreground/60 mb-6">Anda belum memiliki daftar janji temu aktif untuk saat ini.</p>
       </Card>
     )
   }
@@ -119,10 +120,10 @@ export default function ActiveAppointments() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-xl font-bold text-foreground mb-1">
-                      {appointment.poli_service?.name || 'General Service'}
+                      {appointment.poli_service?.name || 'Layanan Umum'}
                     </h3>
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full capitalize">
-                      {appointment.status.replace('_', ' ')}
+                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+                      {getStatusLabel(appointment.status)}
                     </span>
                   </div>
                 </div>
@@ -140,7 +141,7 @@ export default function ActiveAppointments() {
                   </div>
                   <div className="flex items-center gap-2">
                     <User size={18} className="text-primary flex-shrink-0" />
-                    <span className="text-foreground/70">Not Assigned yet</span>
+                    <span className="text-foreground/70">Belum Ditentukan</span>
                   </div>
                 </div>
 
@@ -151,7 +152,7 @@ export default function ActiveAppointments() {
                         <ListOrdered size={18} strokeWidth={1.8} />
                       </div>
                       <div>
-                        <p className="text-xs text-foreground/50 uppercase tracking-wider">Current Queue</p>
+                        <p className="text-xs text-foreground/50 uppercase tracking-wider">Antrian Saat Ini</p>
                         {isCheckedIn && appointment.poli_service?.code ? (
                           <CurrentQueueDisplay poliCode={appointment.poli_service.code} />
                         ) : (
@@ -159,7 +160,7 @@ export default function ActiveAppointments() {
                             <p className="text-foreground font-semibold">
                               <span className="text-primary">-</span>
                             </p>
-                            <p className="text-xs text-foreground/50 mt-1">Visit clinic to get a queue number</p>
+                            <p className="text-xs text-foreground/50 mt-1">Kunjungi klinik untuk mendapatkan nomor antrian</p>
                           </>
                         )}
                       </div>
@@ -170,18 +171,18 @@ export default function ActiveAppointments() {
                         <Ticket size={18} strokeWidth={1.8} />
                       </div>
                       <div>
-                        <p className="text-xs text-foreground/50 uppercase tracking-wider">Your Queue Number</p>
+                        <p className="text-xs text-foreground/50 uppercase tracking-wider">Nomor Antrian Anda</p>
                         {queueNumber ? (
                           <p className="text-foreground font-semibold">
                             <span className="text-primary font-mono text-xl">{queueNumber}</span>
                           </p>
                         ) : (
                           <p className="text-foreground/70 text-sm">
-                            Queue number will be given after check-in.
+                            Nomor antrian akan diberikan setelah Anda melakukan check-in.
                           </p>
                         )}
                         <p className="text-xs text-foreground/50 mt-1">
-                          {isCheckedIn ? 'Checked-in status: Yes' : 'Checked-in status: Not yet'}
+                          {isCheckedIn ? 'Status Check-in: Sudah' : 'Status Check-in: Belum'}
                         </p>
                       </div>
                     </div>
@@ -191,7 +192,7 @@ export default function ActiveAppointments() {
 
               {!isCheckedIn && (
                 <div className="border-l border-border/40 pl-6 md:w-48">
-                  <p className="text-xs text-foreground/50 uppercase tracking-wider mb-2">Booking Code</p>
+                  <p className="text-xs text-foreground/50 uppercase tracking-wider mb-2">Kode Booking</p>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl font-bold text-primary font-mono">{appointment.booking_code}</span>
                     <button
@@ -205,7 +206,7 @@ export default function ActiveAppointments() {
                       )}
                     </button>
                   </div>
-                  <p className="text-xs text-foreground/50 mt-2">Present this code at check-in</p>
+                  <p className="text-xs text-foreground/50 mt-2">Tunjukkan kode ini saat melakukan check-in</p>
                 </div>
               )}
             </div>
@@ -213,7 +214,7 @@ export default function ActiveAppointments() {
             {!isCheckedIn && appointment.status !== 'cancelled' && (
               <div className="flex gap-3">
                 <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive/10 cursor-pointer flex-1">
-                  Cancel
+                  Batalkan
                 </Button>
               </div>
             )}

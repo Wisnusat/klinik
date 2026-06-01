@@ -16,17 +16,17 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
 
   const handleSubmit = async () => {
     if (!nik.trim()) {
-      setError('NIK is required')
+      setError('NIK wajib diisi')
       return
     }
     
     if (nik.length !== 16) {
-      setError('NIK must be 16 digits')
+      setError('NIK harus berisi 16 digit')
       return
     }
 
     if (!/^\d+$/.test(nik)) {
-      setError('NIK must contain only numbers')
+      setError('NIK hanya boleh berisi angka')
       return
     }
 
@@ -44,10 +44,10 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
       if (json.success) {
         onSubmit(nik, json.data.patient, json.data.isNew)
       } else {
-        setError(json.error || 'Failed to verify NIK')
+        setError(json.error || 'Gagal memverifikasi NIK')
       }
     } catch (err) {
-      setError('An error occurred during verification')
+      setError('Terjadi kesalahan saat memverifikasi NIK')
     } finally {
       setIsChecking(false)
     }
@@ -56,21 +56,21 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Verify Your NIK</h2>
-        <p className="text-foreground/60">Enter your NIK (National ID) to proceed with booking</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Verifikasi NIK Anda</h2>
+        <p className="text-foreground/60">Masukkan NIK (Nomor Induk Kependudukan) Anda untuk melanjutkan pendaftaran</p>
       </div>
 
       <Card className="p-6 bg-secondary/30 border-secondary/50">
         <p className="text-sm text-foreground/70 mb-4">
-          We'll check if you're an existing patient. If not, we'll verify your data securely.
+          Kami akan memeriksa apakah Anda sudah terdaftar sebagai pasien. Jika belum, silakan lengkapi profil Anda pada langkah berikutnya.
         </p>
       </Card>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-foreground">National ID (NIK) *</label>
+        <label className="text-sm font-medium text-foreground">Nomor Induk Kependudukan (NIK) *</label>
         <Input
           type="text"
-          placeholder="Enter your 16-digit NIK"
+          placeholder="Masukkan 16 digit NIK Anda"
           value={nik}
           onChange={(e) => {
             setNik(e.target.value.replace(/\D/g, '').slice(0, 16))
@@ -81,7 +81,7 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
           className="text-lg tracking-widest"
         />
         {error && <p className="text-sm text-destructive">{error}</p>}
-        <p className="text-xs text-foreground/50">{nik.length}/16 digits</p>
+        <p className="text-xs text-foreground/50">{nik.length}/16 digit</p>
       </div>
 
       <Button
@@ -89,7 +89,7 @@ export default function NikVerification({ onSubmit }: NikVerificationProps) {
         disabled={isChecking}
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
       >
-        {isChecking ? 'Verifying...' : 'Continue'}
+        {isChecking ? 'Memverifikasi...' : 'Lanjutkan'}
       </Button>
     </div>
   )

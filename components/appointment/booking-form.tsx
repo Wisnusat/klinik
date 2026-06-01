@@ -37,8 +37,8 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
   })
 
   const handleNikSubmit = (nik: string, patientData: any, isNew: boolean) => {
-    setFormData({ 
-      ...formData, 
+    setFormData({
+      ...formData,
       nik,
       patientId: patientData?.id || '',
       name: patientData?.full_name || '',
@@ -50,7 +50,7 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
       dob: patientData?.date_of_birth || '',
       bpjsNumber: patientData?.bpjs_no || '',
     })
-    
+
     // If it's not a new patient, we can skip the profile form
     const exists = !isNew
     setNikExists(exists)
@@ -69,7 +69,7 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
 
   const handlePaymentSubmit = (paymentData: any) => {
     setFormData({ ...formData, ...paymentData })
-    
+
     if (paymentData.paymentMethod === 'bpjs') {
       setStep(5) // Go to BPJS validation
     } else {
@@ -104,8 +104,8 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
   }
 
   const renderStepIndicator = () => {
-    const steps = ['NIK', 'Profile', 'Service & Date', 'Payment']
-    const displaySteps = formData.paymentMethod === 'bpjs' 
+    const steps = ['NIK', 'Profil', 'Layanan & Tanggal', 'Pembayaran']
+    const displaySteps = formData.paymentMethod === 'bpjs'
       ? steps
       : steps.filter((_, i) => i !== 4) // Remove BPJS step for non-BPJS payments
 
@@ -113,22 +113,21 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
       <div className="mb-8">
         <div className="flex justify-between items-center">
           {displaySteps.map((stepName, index) => {
-            const stepNumber = formData.paymentMethod === 'bpjs' 
+            const stepNumber = formData.paymentMethod === 'bpjs'
               ? index + 1
               : index < 4 ? index + 1 : index // Adjust numbering for non-BPJS
-            
-            const isActive = formData.paymentMethod === 'bpjs' 
+
+            const isActive = formData.paymentMethod === 'bpjs'
               ? step === stepNumber
               : step === stepNumber || (step > 5 && index === 5)
-            
+
             return (
               <div key={index} className="flex flex-col items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 ${
-                    isActive
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 ${isActive
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary text-secondary-foreground'
-                  }`}
+                    }`}
                 >
                   {index + 1}
                 </div>
@@ -157,12 +156,12 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
             <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
               <div className="text-4xl">✓</div>
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Booking Confirmed!</h2>
-            <p className="text-foreground/60 mb-6">Your appointment has been successfully booked</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Pendaftaran Berhasil!</h2>
+            <p className="text-foreground/60 mb-6">Janji temu Anda telah berhasil didaftarkan</p>
             <div className="bg-secondary/50 p-6 rounded-lg mb-8">
-              <p className="text-sm text-foreground/60 mb-2">Your Booking Code:</p>
+              <p className="text-sm text-foreground/60 mb-2">Kode Booking Anda:</p>
               <p className="text-3xl font-bold text-primary">{formData.bookingCode}</p>
-              <p className="text-xs text-foreground/50 mt-2">Please save this code for check-in</p>
+              <p className="text-xs text-foreground/50 mt-2">Simpan kode booking ini untuk melakukan check-in di klinik</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Button
@@ -190,10 +189,10 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
                 }}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                Book Another Appointment
+                Daftar Janji Temu Lain
               </Button>
               <Button variant="outline" className="border-primary text-primary hover:bg-secondary" onClick={viewAppointment}>
-                View My Appointments
+                Lihat Janji Temu Saya
               </Button>
             </div>
           </div>
@@ -208,7 +207,7 @@ export default function BookingForm({ viewAppointment }: BookingFormProps) {
             className="border-primary text-primary hover:bg-secondary"
             disabled={step === 1}
           >
-            Back
+            Kembali
           </Button>
         </div>
       )}

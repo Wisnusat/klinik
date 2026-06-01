@@ -17,17 +17,17 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
 
   const handleValidate = async () => {
     if (!bpjsNumber.trim()) {
-      setError('BPJS number is required')
+      setError('Nomor kartu BPJS wajib diisi')
       return
     }
 
     if (bpjsNumber.length !== 16) {
-      setError('BPJS number must be 16 digits')
+      setError('Nomor kartu BPJS harus berisi 16 digit')
       return
     }
 
     if (!/^\d+$/.test(bpjsNumber)) {
-      setError('BPJS number must contain only numbers')
+      setError('Nomor kartu BPJS hanya boleh berisi angka')
       return
     }
 
@@ -66,23 +66,23 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Verify BPJS Number</h2>
-        <p className="text-foreground/60">We need to verify your BPJS health insurance number</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Verifikasi Nomor BPJS</h2>
+        <p className="text-foreground/60">Kami perlu melakukan verifikasi nomor kartu BPJS Kesehatan Anda</p>
       </div>
 
       <Card className="p-4 bg-secondary/30 border-secondary/50">
         <p className="text-sm text-foreground/70">
-          Your BPJS number must be valid and active. We'll verify it with our system.
+          Pastikan kartu BPJS Anda dalam status aktif dan valid. Kami akan mencocokkan nomor Anda dengan sistem BPJS.
         </p>
       </Card>
 
       {validationResult === null ? (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">BPJS Number *</label>
+            <label className="text-sm font-medium text-foreground">Nomor BPJS *</label>
             <Input
               type="text"
-              placeholder="Enter your 16-digit BPJS number"
+              placeholder="Masukkan 16 digit nomor BPJS Anda"
               value={bpjsNumber}
               onChange={(e) => {
                 setBpjsNumber(e.target.value.replace(/\D/g, '').slice(0, 16))
@@ -93,7 +93,7 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
               className="text-lg tracking-widest"
             />
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <p className="text-xs text-foreground/50">{bpjsNumber.length}/16 digits</p>
+            <p className="text-xs text-foreground/50">{bpjsNumber.length}/16 digit</p>
           </div>
 
           {isValidating && (
@@ -109,7 +109,7 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
                     }}
                   ></div>
                 </div>
-                <p className="text-sm text-foreground/70 font-medium">Validating BPJS number...</p>
+                <p className="text-sm text-foreground/70 font-medium">Memverifikasi nomor BPJS...</p>
               </div>
             </Card>
           )}
@@ -119,7 +119,7 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
             disabled={isValidating || !bpjsNumber}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
           >
-            {isValidating ? 'Validating...' : 'Verify BPJS Number'}
+            {isValidating ? 'Memverifikasi...' : 'Verifikasi Nomor BPJS'}
           </Button>
 
           <style jsx>{`
@@ -145,9 +145,9 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-foreground">BPJS Verified Successfully</h3>
-                <p className="text-sm text-foreground/60 mt-1">Your BPJS number is valid and active</p>
-                <p className="text-xs text-foreground/50 mt-2">BPJS Number: {bpjsNumber}</p>
+                <h3 className="text-lg font-semibold text-foreground">Nomor BPJS Berhasil Diverifikasi</h3>
+                <p className="text-sm text-foreground/60 mt-1">Nomor kartu BPJS Anda valid dan berstatus aktif</p>
+                <p className="text-xs text-foreground/50 mt-2">Nomor BPJS: {bpjsNumber}</p>
               </div>
             </div>
           </Card>
@@ -156,7 +156,7 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
             onClick={handleContinue}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Proceed to Confirmation
+            Lanjutkan ke Konfirmasi
           </Button>
 
           <Button
@@ -167,7 +167,7 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
             variant="outline"
             className="w-full border-primary text-primary hover:bg-secondary"
           >
-            Use Different BPJS Number
+            Gunakan Nomor BPJS Lain
           </Button>
         </div>
       ) : (
@@ -182,9 +182,9 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-foreground">BPJS Verification Failed</h3>
-                <p className="text-sm text-foreground/60 mt-1">The BPJS number you entered is not valid or inactive</p>
-                <p className="text-xs text-foreground/50 mt-2">Please check your number and try again</p>
+                <h3 className="text-lg font-semibold text-foreground">Verifikasi BPJS Gagal</h3>
+                <p className="text-sm text-foreground/60 mt-1">Nomor kartu BPJS yang Anda masukkan tidak valid atau tidak aktif</p>
+                <p className="text-xs text-foreground/50 mt-2">Silakan periksa kembali nomor kartu Anda dan coba lagi</p>
               </div>
             </div>
           </Card>
@@ -196,7 +196,7 @@ export default function BpjsValidation({ onSubmit }: BpjsValidationProps) {
             }}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Try Again
+            Coba Lagi
           </Button>
         </div>
       )}

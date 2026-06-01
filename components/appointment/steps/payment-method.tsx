@@ -16,23 +16,23 @@ export default function PaymentMethod({ onSubmit }: PaymentMethodProps) {
   const paymentMethods = [
     {
       id: 'non-bpjs',
-      name: 'Non-BPJS',
-      description: 'Tunai atau Debit',
+      name: 'Umum (Non-BPJS)',
+      description: 'Tunai, QRIS, atau Kartu',
       icon: Building2,
-      details: 'Account number will be provided after confirmation'
+      details: 'Detail pembayaran akan diberikan setelah konfirmasi'
     },
     {
       id: 'bpjs',
-      name: 'BPJS Health',
-      description: 'Indonesian Health Insurance',
+      name: 'BPJS Kesehatan',
+      description: 'Jaminan Kesehatan Nasional',
       icon: CreditCard,
-      details: 'We will verify your BPJS number'
+      details: 'Kami akan melakukan verifikasi nomor kartu BPJS Anda'
     }
   ]
 
   const handleSubmit = () => {
     if (!selectedMethod) {
-      setError('Please select a payment method')
+      setError('Silakan pilih metode pembayaran')
       return
     }
     setError('')
@@ -42,8 +42,8 @@ export default function PaymentMethod({ onSubmit }: PaymentMethodProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Select Payment Method</h2>
-        <p className="text-foreground/60">Choose how you'd like to pay for your appointment</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Pilih Metode Pembayaran</h2>
+        <p className="text-foreground/60">Pilih metode penjaminan/pembayaran untuk janji temu Anda</p>
       </div>
 
       <div className="space-y-3">
@@ -101,7 +101,7 @@ export default function PaymentMethod({ onSubmit }: PaymentMethodProps) {
         onClick={handleSubmit}
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
       >
-        Continue
+        Lanjutkan
       </Button>
     </div>
   )

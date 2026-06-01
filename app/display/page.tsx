@@ -27,6 +27,13 @@ const QueueDisplay = () => {
 
   const [currentTime, setCurrentTime] = useState(new Date())
 
+  const getServiceLabel = (serviceName: string) => {
+    const s = serviceName.toLowerCase()
+    if (s === 'general') return 'Umum'
+    if (s === 'dental') return 'Gigi'
+    return serviceName
+  }
+
   const fetchQueue = async () => {
     try {
       const res = await fetch(`/api/queue?service=${service}`)
@@ -83,7 +90,7 @@ const QueueDisplay = () => {
         <div className="container mx-auto max-w-7xl px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className={`text-4xl font-bold ${getServiceColor()}`}>Antrian {queueData.service}</h1>
+              <h1 className={`text-4xl font-bold ${getServiceColor()}`}>Antrian {getServiceLabel(queueData.service)}</h1>
               <p className="text-lg text-foreground/60 mt-1">Klinik</p>
             </div>
             <div className="flex items-center gap-8">
@@ -160,7 +167,7 @@ const QueueDisplay = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 text-center">
                 <div>
                   <p className="text-xs lg:text-sm text-foreground/50 uppercase tracking-wider mb-1 lg:mb-2">Layanan</p>
-                  <p className="text-sm lg:text-2xl font-semibold text-foreground">{queueData.service}</p>
+                  <p className="text-sm lg:text-2xl font-semibold text-foreground">{getServiceLabel(queueData.service)}</p>
                 </div>
                 <div>
                   <p className="text-xs lg:text-sm text-foreground/50 uppercase tracking-wider mb-1 lg:mb-2">Dokter</p>

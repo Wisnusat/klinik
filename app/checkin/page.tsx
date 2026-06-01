@@ -128,7 +128,7 @@ export default function CheckinPage() {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-2">Check-in</h1>
             <p className="text-foreground/60">
-              Masukkan kode booking dari appointment kamu untuk melakukan check-in di klinik.
+              Masukkan kode booking dari janji temu kamu untuk melakukan check-in di klinik.
             </p>
           </div>
 
@@ -178,9 +178,9 @@ export default function CheckinPage() {
                 <div className="space-y-4">
                   <Alert>
                     <CheckCircle2 className="text-primary" />
-                    <AlertTitle>Appointment ditemukan</AlertTitle>
+                    <AlertTitle>Janji temu ditemukan</AlertTitle>
                     <AlertDescription>
-                      Silakan cek detail appointment di bawah, lalu tekan tombol check-in.
+                      Silakan cek detail janji temu di bawah, lalu tekan tombol check-in.
                     </AlertDescription>
                   </Alert>
 
@@ -224,7 +224,7 @@ export default function CheckinPage() {
                         <div className="flex items-start gap-2">
                           <Info className="text-blue-600 dark:text-blue-400 mt-0.5" size={16} />
                           <p className="text-xs text-blue-800 dark:text-blue-200">
-                            <strong>Info:</strong> Nomor antrian juga dapat dilihat pada halaman appointment atau booking kamu kapan saja.
+                            <strong>Info:</strong> Nomor antrian juga dapat dilihat pada halaman janji temu atau pemesanan kamu kapan saja.
                           </p>
                         </div>
                       </div>
@@ -278,7 +278,7 @@ export default function CheckinPage() {
                         <div className="flex items-start gap-2">
                           <Info className="text-green-600 dark:text-green-400 mt-0.5" size={16} />
                           <p className="text-xs text-green-800 dark:text-green-200">
-                            <strong>Info:</strong> Nomor antrian {queueNumber} juga tersimpan di halaman appointment/booking kamu.
+                            <strong>Info:</strong> Nomor antrian {queueNumber} juga tersimpan di halaman janji temu/pemesanan kamu.
                           </p>
                         </div>
                       </div>
@@ -296,7 +296,7 @@ export default function CheckinPage() {
                           setQueueNumber(null)
                         }}
                       >
-                        Check-in Appointment Lain
+                        Check-in Janji Temu Lain
                       </Button>
                     </div>
                   </div>
