@@ -33,5 +33,7 @@ export const getStatusLabel = (status: string) => {
   const s = status.toLowerCase()
   if (s === 'checked_in') return 'Selesai'
   if (s === 'cancelled') return 'Dibatalkan'
+  if (s === 'in_service') return 'Ditangani'
+  if (s === 'waiting') return 'Menunggu Antrian'
   return status.replace('_', ' ')
 }

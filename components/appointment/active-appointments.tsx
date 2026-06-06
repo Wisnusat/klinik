@@ -123,7 +123,7 @@ export default function ActiveAppointments() {
                       {appointment.poli_service?.name || 'Layanan Umum'}
                     </h3>
                     <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                      {getStatusLabel(appointment.status)}
+                      {getStatusLabel(appointment.queue_status)}
                     </span>
                   </div>
                 </div>
