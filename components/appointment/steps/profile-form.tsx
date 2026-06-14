@@ -27,7 +27,7 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
     email: '',
     phone: '',
     address: '',
-    bloodType: '',
+    // bloodType: '',
     gender: '',
     dob: ''
   })
@@ -103,7 +103,7 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
           {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Golongan Darah *</label>
           <Select value={formData.bloodType} onValueChange={(value) => {
             setFormData({ ...formData, bloodType: value })
@@ -124,7 +124,7 @@ export default function ProfileForm({ onSubmit }: ProfileFormProps) {
             </SelectContent>
           </Select>
           {errors.bloodType && <p className="text-sm text-destructive">{errors.bloodType}</p>}
-        </div>
+        </div> */}
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">Jenis Kelamin *</label>
