@@ -17,11 +17,37 @@ import {
   Sparkles,
   Scissors,
   FlaskConical,
+  Activity,
+  Brain,
+  Microscope,
+  Syringe,
+  Thermometer,
+  Ear,
+  Shield,
+  Dna,
 } from 'lucide-react'
 import { DEFAULT_SERVICES, type ServicesContent, type ServiceItem } from '@/lib/cms'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const SERVICE_ICONS: Record<string, any> = {
+  // icon key lookups (stored in cms_content item.icon)
+  'Stethoscope': Stethoscope,
+  'Baby': Baby,
+  'Scissors': Scissors,
+  'Sparkles': Sparkles,
+  'Pill': Pill,
+  'FlaskConical': FlaskConical,
+  'Heart': Heart,
+  'Eye': Eye,
+  'Activity': Activity,
+  'Brain': Brain,
+  'Microscope': Microscope,
+  'Syringe': Syringe,
+  'Thermometer': Thermometer,
+  'Ear': Ear,
+  'Shield': Shield,
+  'Dna': Dna,
+  // legacy name-based fallbacks
   'Poli Obgyn': Baby,
   'Poli Bedah': Scissors,
   'Poli Gigi': Sparkles,
@@ -61,7 +87,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
         >
           <CarouselContent>
             {s.items.map((service: ServiceItem, index: number) => {
-              const IconComponent = SERVICE_ICONS[service.name] ?? Stethoscope
+              const IconComponent = SERVICE_ICONS[service.icon ?? service.name] ?? Stethoscope
               return (
                 <CarouselItem
                   key={index}

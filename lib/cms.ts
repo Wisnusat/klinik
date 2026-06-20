@@ -80,6 +80,7 @@ export interface ServiceItem {
     name: string
     description: string
     hours: string
+    icon?: string
 }
 
 export interface ServicesContent {
